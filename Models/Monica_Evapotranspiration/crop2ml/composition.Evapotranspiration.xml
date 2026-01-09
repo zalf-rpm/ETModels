@@ -13,63 +13,48 @@
     <Composition>
         <Model name="Evapotranspiration" id="Monica_Evapotranspiration.Evapotranspiration" filename="unit.Evapotranspiration.xml"/>
         <Links>
-            <InputLink source="tmin" target="NoSnowSoilSurfaceTemperature.tmin"/>
-            <InputLink source="tmax" target="NoSnowSoilSurfaceTemperature.tmax"/>
-            <InputLink source="globrad" target="NoSnowSoilSurfaceTemperature.globrad"/>
-            <InputLink source="dampingFactor" target="NoSnowSoilSurfaceTemperature.dampingFactor"/>
-            <InputLink source="soilCoverage" target="NoSnowSoilSurfaceTemperature.soilCoverage"/>
-            <!--<InputLink source="soilSurfaceTemperature"
-                       target="NoSnowSoilSurfaceTemperature.soilSurfaceTemperature"/>-->
-
-            <InputLink source="soilSurfaceTemperatureBelowSnow"
-                       target="WithSnowSoilSurfaceTemperature.soilSurfaceTemperatureBelowSnow"/>
-            <InputLink source="hasSnowCover" target="WithSnowSoilSurfaceTemperature.hasSnowCover"/>
-
-            <InputLink source="timeStep" target="SoilTemperature.timeStep"/>
-            <InputLink source="soilMoistureConst" target="SoilTemperature.soilMoistureConst"/>
-            <InputLink source="baseTemp" target="SoilTemperature.baseTemp"/>
-            <InputLink source="initialSurfaceTemp" target="SoilTemperature.initialSurfaceTemp"/>
-            <InputLink source="densityAir" target="SoilTemperature.densityAir"/>
-            <InputLink source="specificHeatCapacityAir" target="SoilTemperature.specificHeatCapacityAir"/>
-            <InputLink source="densityHumus" target="SoilTemperature.densityHumus"/>
-            <InputLink source="specificHeatCapacityHumus" target="SoilTemperature.specificHeatCapacityHumus"/>
-            <InputLink source="densityWater" target="SoilTemperature.densityWater"/>
-            <InputLink source="specificHeatCapacityWater" target="SoilTemperature.specificHeatCapacityWater"/>
-            <InputLink source="quartzRawDensity" target="SoilTemperature.quartzRawDensity"/>
-            <InputLink source="specificHeatCapacityQuartz" target="SoilTemperature.specificHeatCapacityQuartz"/>
-            <InputLink source="nTau" target="SoilTemperature.nTau"/>
-            <!--<InputLink source="soilAlbedo" target="SoilTemperature.soilAlbedo"/>-->
-            <InputLink source="noOfTempLayers" target="SoilTemperature.noOfTempLayers"/>
-            <InputLink source="noOfTempLayersPlus1" target="SoilTemperature.noOfTempLayersPlus1"/>
-            <InputLink source="noOfSoilLayers" target="SoilTemperature.noOfSoilLayers"/>
-
-            <InputLink source="layerThickness" target="SoilTemperature.layerThickness"/>
-            <InputLink source="soilBulkDensity" target="SoilTemperature.soilBulkDensity"/>
-            <InputLink source="saturation" target="SoilTemperature.saturation"/>
-            <InputLink source="soilOrganicMatter" target="SoilTemperature.soilOrganicMatter"/>
-            <!--<InputLink source="prevDaySoilTemperature" target="SoilTemperature.soilTemperature"/>-->
-            <InputLink source="V" target="SoilTemperature.V"/>
-            <InputLink source="B" target="SoilTemperature.B"/>
-            <InputLink source="volumeMatrix" target="SoilTemperature.volumeMatrix"/>
-            <InputLink source="volumeMatrixOld" target="SoilTemperature.volumeMatrixOld"/>
-            <InputLink source="matrixPrimaryDiagonal" target="SoilTemperature.matrixPrimaryDiagonal"/>
-            <InputLink source="matrixSecondaryDiagonal" target="SoilTemperature.matrixSecondaryDiagonal"/>
-            <InputLink source="heatConductivity" target="SoilTemperature.heatConductivity"/>
-            <InputLink source="heatConductivityMean" target="SoilTemperature.heatConductivityMean"/>
-            <InputLink source="heatCapacity" target="SoilTemperature.heatCapacity"/>
-
-            <InputLink source="solution" target="SoilTemperature.solution"/>
-            <InputLink source="matrixDiagonal" target="SoilTemperature.matrixDiagonal"/>
-            <InputLink source="matrixLowerTriangle" target="SoilTemperature.matrixLowerTriangle"/>
-            <InputLink source="heatFlow" target="SoilTemperature.heatFlow"/>
-
-            <InternalLink source="NoSnowSoilSurfaceTemperature.soilSurfaceTemperature"
-                          target="WithSnowSoilSurfaceTemperature.noSnowSoilSurfaceTemperature"/>
-            <InternalLink source="WithSnowSoilSurfaceTemperature.soilSurfaceTemperature"
-                          target="SoilTemperature.soilSurfaceTemperature"/>
-
-            <OutputLink source="WithSnowSoilSurfaceTemperature.soilSurfaceTemperature" target="soilSurfaceTemperature"/>
-            <OutputLink source="SoilTemperature.soilTemperature" target="soilTemperature"/>
+            <InputLink source="evaporation_zeta" target="Evapotranspiration.evaporation_zeta"/>
+            <InputLink source="maximum_evaporation_impact_depth" target="Evapotranspiration.maximum_evaporation_impact_depth"/>
+            <InputLink source="no_of_soil_layers" target="Evapotranspiration.no_of_soil_layers"/>
+            <InputLink source="layer_thickness" target="Evapotranspiration.layer_thickness"/>
+            <InputLink source="reference_albedo" target="Evapotranspiration.reference_albedo"/>
+            <InputLink source="stomata_resistance" target="Evapotranspiration.stomata_resistance"/>
+            <InputLink source="xsa_critical_soil_moisture" target="Evapotranspiration.xsa_critical_soil_moisture"/>
+            <InputLink source="external_reference_evapotranspiration" target="Evapotranspiration.external_reference_evapotranspiration"/>
+            <InputLink source="height_nn" target="Evapotranspiration.height_nn"/>
+            <InputLink source="max_air_temperature" target="Evapotranspiration.max_air_temperature"/>
+            <InputLink source="min_air_temperature" target="Evapotranspiration.min_air_temperature"/>
+            <InputLink source="mean_air_temperature" target="Evapotranspiration.mean_air_temperature"/>
+            <InputLink source="relative_humidity" target="Evapotranspiration.relative_humidity"/>
+            <InputLink source="wind_speed" target="Evapotranspiration.wind_speed"/>
+            <InputLink source="wind_speed_height" target="Evapotranspiration.wind_speed_height"/>
+            <InputLink source="global_radiation" target="Evapotranspiration.global_radiation"/>
+            <InputLink source="julian_day" target="Evapotranspiration.julian_day"/>
+            <InputLink source="latitude" target="Evapotranspiration.latitude"/>
+            <InputLink source="evaporated_from_surface" target="Evapotranspiration.evaporated_from_surface"/>
+            <InputLink source="surface_water_storage" target="Evapotranspiration.surface_water_storage"/>
+            <InputLink source="snow_depth" target="Evapotranspiration.snow_depth"/>
+            <InputLink source="developmental_stage" target="Evapotranspiration.developmental_stage"/>
+            <InputLink source="crop_reference_evapotranspiration" target="Evapotranspiration.crop_reference_evapotranspiration"/>
+            <InputLink source="reference_evapotranspiration" target="Evapotranspiration.reference_evapotranspiration"/>
+            <InputLink source="actual_evaporation" target="Evapotranspiration.actual_evaporation"/>
+            <InputLink source="actual_transpiration" target="Evapotranspiration.actual_transpiration"/>
+            <InputLink source="surface_water_storage" target="Evapotranspiration.surface_water_storage"/>
+            <InputLink source="kc_factor" target="Evapotranspiration.kc_factor"/>
+            <InputLink source="percentage_soil_coverage" target="Evapotranspiration.percentage_soil_coverage"/>
+            <InputLink source="soil_moisture" target="Evapotranspiration.soil_moisture"/>
+            <InputLink source="permanent_wilting_point" target="Evapotranspiration.permanent_wilting_point"/>
+            <InputLink source="field_capacity" target="Evapotranspiration.field_capacity"/>
+            <InputLink source="evaporation" target="Evapotranspiration.evaporation"/>
+            <InputLink source="transpiration" target="Evapotranspiration.transpiration"/>
+            <InputLink source="crop_transpiration" target="Evapotranspiration.crop_transpiration"/>
+            <InputLink source="crop_remaining_evapotranspiration" target="Evapotranspiration.crop_remaining_evapotranspiration"/>
+            <InputLink source="crop_evaporated_from_intercepted" target="Evapotranspiration.crop_evaporated_from_intercepted"/>
+            <InputLink source="evapotranspiration" target="Evapotranspiration.evapotranspiration"/>
+            <InputLink source="actual_evapotranspiration" target="Evapotranspiration.actual_evapotranspiration"/>
+            <InputLink source="vapor_pressure" target="Evapotranspiration.vapor_pressure"/>
+            <OutputLink source="Evapotranspiration.evaporated_from_surface" target="evaporated_from_surface"/>
+            <OutputLink source="Evapotranspiration.actual_evapotranspiration" target="actual_evapotranspiration"/>
         </Links>
     </Composition>
 </ModelComposition>
