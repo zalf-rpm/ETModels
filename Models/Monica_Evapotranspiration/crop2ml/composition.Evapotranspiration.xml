@@ -19,6 +19,7 @@
             <InputLink source="layer_thickness" target="Evapotranspiration.layer_thickness"/>
             <InputLink source="reference_albedo" target="Evapotranspiration.reference_albedo"/>
             <InputLink source="stomata_resistance" target="Evapotranspiration.stomata_resistance"/>
+            <InputLink source="evaporation_reduction_method" target="Evapotranspiration.evaporation_reduction_method"/>
             <InputLink source="xsa_critical_soil_moisture" target="Evapotranspiration.xsa_critical_soil_moisture"/>
             <InputLink source="external_reference_evapotranspiration" target="Evapotranspiration.external_reference_evapotranspiration"/>
             <InputLink source="height_nn" target="Evapotranspiration.height_nn"/>

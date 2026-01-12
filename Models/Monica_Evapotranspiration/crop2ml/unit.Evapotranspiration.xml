@@ -30,6 +30,9 @@
         <Input name="stomata_resistance" description="stomata resistance" inputtype="parameter"
                parametercategory="constant"
                datatype="DOUBLE" max="10000" min="0" default="100" unit="s/m"/>
+        <Input name="evaporation_reduction_method" description="THESEUS (0) or HERMES (1) evaporation reduction method"
+               inputtype="parameter" parametercategory="constant"
+               datatype="INT" max="1" min="0" default="1" unit="dimensionless"/>
         <Input name="xsa_critical_soil_moisture" description="XSACriticalSoilMoisture" inputtype="parameter"
                parametercategory="constant"
                datatype="DOUBLE" max="1.5" min="0" default="0.1" unit="m3/m3"/>
@@ -132,7 +135,7 @@
         <Output name="actual_evapotranspiration" description="actual evapotranspiration" variablecategory="state"
                 datatype="DOUBLE" max="200" min="0" unit="mm"/>
     </Outputs>
-    <Initialization name="init_evapotranspiration" language="cyml" filename="algo/pyx/init_evapotranspiration.pyx"/>
+    <!--<Initialization name="init_evapotranspiration" language="cyml" filename="algo/pyx/init_evapotranspiration.pyx"/>-->
     <Function name="helper_functions" description="helper functions for evapotranspiration code" language="cyml"
               type="external" filename="algo/pyx/helper_functions.pyx"/>
     <Algorithm language="cyml" platform="" filename="algo/pyx/evapotranspiration.pyx"/>

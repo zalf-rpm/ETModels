@@ -1,44 +1,46 @@
-developmental_stage = 0
-external_reference_evapotranspiration = 0
-reference_evapotranspiration = 0
-kc_factor = 0
-snow_depth = 0
-no_of_soil_layers = 20
-layer_thickness = []
-soil_moisture = []
-permanent_wilting_point = []
-field_capacity = []
-evaporation = []
-transpiration = []
-crop_transpiration = []
-percentage_soil_coverage = 0
-evapotranspiration = []
-surface_water_storage = 0
-maximum_evaporation_impact_depth = 0
-evaporation_zeta = 0
-height_nn = 0
-max_air_temperature = 0
-min_air_temperature = 0
-relative_humidity = 0
-mean_air_temperature = 0
-wind_speed = 0
-wind_speed_height = 0
-global_radiation = 0
-julian_day = 0
-latitude = 0
-reference_albedo = 0
-vapor_pressure = 0
-stomata_resistance = 100
-crop_remaining_evapotranspiration = 0
-crop_evaporated_from_intercepted = 0
+# developmental_stage = 0
+# external_reference_evapotranspiration = 0
+# reference_evapotranspiration = 0
+# kc_factor = 0
+# snow_depth = 0
+# no_of_soil_layers = 20
+# layer_thickness = []
+# soil_moisture = []
+# permanent_wilting_point = []
+# field_capacity = []
+# evaporation = []
+# transpiration = []
+# crop_transpiration = []
+# percentage_soil_coverage = 0
+# evapotranspiration = []
+# surface_water_storage = 0
+# maximum_evaporation_impact_depth = 0
+# evaporation_zeta = 0
+# height_nn = 0
+# max_air_temperature = 0
+# min_air_temperature = 0
+# relative_humidity = 0
+# mean_air_temperature = 0
+# wind_speed = 0
+# wind_speed_height = 0
+# global_radiation = 0
+# julian_day = 0
+# latitude = 0
+# reference_albedo = 0
+# vapor_pressure = 0
+# stomata_resistance = 100
+# crop_remaining_evapotranspiration = 0
+# crop_evaporated_from_intercepted = 0
 
+cdef bool evaporation_from_surface = False
+cdef float eRed1
+cdef float eRed2
+cdef float eRed3
+cdef float eReducer
+cdef int i
 
-cdef float potential_evapotranspiration
-potential_evapotranspiration = 0.0
-
-cdef float evaporated_from_intercept
-evaporated_from_intercept = 0.0
-
+cdef float potential_evapotranspiration = 0.0
+cdef float evaporated_from_intercept = 0.0
 evaporated_from_surface = 0.0
 
 #snow_depth = snowComponent->getSnowDepth();
@@ -65,12 +67,13 @@ if developmental_stage > 0:
     evaporated_from_intercept = crop_evaporated_from_intercepted #monica.cropGrowth()->get_EvaporatedFromIntercept();
 else: # if no crop grows ETp is calculated from ET0 * kc
     if external_reference_evapotranspiration < 0.0:
-        reference_evapotranspiration, vapor_pressure = calc_reference_evapotranspiration(height_nn, max_air_temperature,
-                                                                    min_air_temperature, relative_humidity,
-                                                                     mean_air_temperature, wind_speed,
-                                                                     wind_speed_height,
-                                                                     global_radiation, julian_day, latitude,
-                                                                         reference_albedo, vapor_pressure, stomata_resistance)
+        reference_evapotranspiration, vapor_pressure = \
+            calc_reference_evapotranspiration(height_nn, max_air_temperature,
+                                              min_air_temperature, relative_humidity,
+                                              mean_air_temperature, wind_speed,
+                                              wind_speed_height,
+                                              global_radiation, julian_day, latitude,
+                                              reference_albedo, vapor_pressure, stomata_resistance)
     else:
         reference_evapotranspiration = external_reference_evapotranspiration
 
@@ -84,7 +87,6 @@ if potential_evapotranspiration > 6.5:
     potential_evapotranspiration = 6.5
 
 if potential_evapotranspiration > 0.0:
-    cdef bool evaporation_from_surface
     evaporation_from_surface = False
 
     # If surface is water-logged, subsequent evaporation from surface water sources
@@ -108,15 +110,14 @@ if potential_evapotranspiration > 0.0:
         potential_evapotranspiration = potential_evapotranspiration * kc_factor / 1.1
 
     # Evaporation from soil
-    if potential_evapotranspiration > 0:
+    if potential_evapotranspiration > 0.0:
         for i in range(no_of_soil_layers):
-            cdef float eRed1
             eRed1 = e_reducer_1(permanent_wilting_point[i], field_capacity[i], soil_moisture[i],
-                                percentage_soil_coverage, potential_evapotranspiration)
+                                percentage_soil_coverage, potential_evapotranspiration,
+                                evaporation_reduction_method, xsa_critical_soil_moisture)
 
-            cdef float eRed2
             eRed2 = 0.0
-            if i >= maximum_evaporation_impact_depth:
+            if float(i) >= maximum_evaporation_impact_depth:
                 # layer is too deep for evaporation
                 eRed2 = 0.0
             else:
@@ -124,9 +125,7 @@ if potential_evapotranspiration > 0.0:
                 # MaximumEvaporationImpactDepth and evaporation_zeta
                 eRed2 = get_deprivation_factor(i + 1, maximum_evaporation_impact_depth, evaporation_zeta, layer_thickness[i])
 
-            cdef float eRed3
             eRed3 = 0.0
-
             if i > 0 and soil_moisture[i] < soil_moisture[i - 1]:
                 # 3rd factor to consider if above layer contains more water than
                 # the adjacent layer below, evaporation will be significantly reduced
@@ -135,12 +134,10 @@ if potential_evapotranspiration > 0.0:
                 eRed3 = 1.0
 
             # EReducer-> factor to reduce evaporation
-            cdef float eReducer
             eReducer = eRed1 * eRed2 * eRed3
 
             if developmental_stage > 0:
                 # vegetation is present
-
                 # Interpolation between [0,1]
                 if percentage_soil_coverage >= 0.0 and percentage_soil_coverage < 1.0:
                     evaporation[i] = (1.0 - percentage_soil_coverage) * eReducer * potential_evapotranspiration
