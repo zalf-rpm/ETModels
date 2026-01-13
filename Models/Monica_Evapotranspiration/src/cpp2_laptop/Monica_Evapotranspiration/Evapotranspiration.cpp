@@ -222,6 +222,15 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 0
     //                          ** default : 0
     //                          ** unit : mm
+    //            * name: surface_water_storage
+    //                          ** description : surface_water_storage
+    //                          ** inputtype : variable
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** default : 0
+    //                          ** unit : mm
     //            * name: snow_depth
     //                          ** description : depth of snow layer
     //                          ** inputtype : variable
@@ -424,9 +433,15 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** max : 200
     //                          ** min : 0
     //                          ** unit : mm
-    s.evaporated_from_surface = 0.0;
+    bool evaporation_from_surface = false;
+    double eRed1;
+    double eRed2;
+    double eRed3;
+    double eReducer;
+    int i;
     double potential_evapotranspiration = 0.0;
     double evaporated_from_intercept = 0.0;
+    s.evaporated_from_surface = 0.0;
     if (s.developmental_stage > 0) {
         if (ex.external_reference_evapotranspiration < 0.0) {
             s.reference_evapotranspiration = s.reference_evapotranspiration;
@@ -451,12 +466,6 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     if (potential_evapotranspiration > 6.5) {
         potential_evapotranspiration = 6.5;
     }
-    bool evaporation_from_surface = false;
-    double eRed1;
-    double eRed2;
-    double eRed3;
-    double eReducer;
-    int i;
     if (potential_evapotranspiration > 0.0) {
         evaporation_from_surface = false;
         if (s.surface_water_storage > 0.0) {
@@ -533,11 +542,10 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
 }
 double Evapotranspiration::get_deprivation_factor(int layer_no, double deprivation_depth, double zeta, double layer_thickness)
 {
-    double ltf;
-    ltf = deprivation_depth / (layer_thickness * 10.0);
     double deprivation_factor;
     double c2;
     double c3;
+    double ltf = deprivation_depth / (layer_thickness * 10.0);
     if (std::abs(zeta) < 0.0003) {
         deprivation_factor = 2.0 / ltf - (1.0 / (ltf * ltf) * (2 * layer_no - 1));
     }
@@ -560,49 +568,31 @@ double Evapotranspiration::bound(double lower, double value, double upper)
 }
 std::tuple<double,double> Evapotranspiration::calc_reference_evapotranspiration(double height_nn, double max_air_temperature, double min_air_temperature, double relative_humidity, double mean_air_temperature, double wind_speed, double wind_speed_height, double global_radiation, int julian_day, double latitude, double reference_albedo, double vapor_pressure, double stomata_resistance)
 {
-    double declination;
-    declination = -23.4 * std::cos(2.0 * M_PI * ((julian_day + 10.0) / 365.0));
-    double declination_sinus;
-    declination_sinus = std::sin(declination * M_PI / 180.0) * std::sin(latitude * M_PI / 180.0);
-    double declination_cosinus;
-    declination_cosinus = std::cos(declination * M_PI / 180.0) * std::cos(latitude * M_PI / 180.0);
-    double arg_astro_day_length;
-    arg_astro_day_length = declination_sinus / declination_cosinus;
+    double declination = -23.4 * std::cos(2.0 * M_PI * ((julian_day + 10.0) / 365.0));
+    double declination_sinus = std::sin(declination * M_PI / 180.0) * std::sin(latitude * M_PI / 180.0);
+    double declination_cosinus = std::cos(declination * M_PI / 180.0) * std::cos(latitude * M_PI / 180.0);
+    double arg_astro_day_length = declination_sinus / declination_cosinus;
     arg_astro_day_length = bound(-1.0, arg_astro_day_length, 1.0);
-    double astronomic_day_length;
-    astronomic_day_length = 12.0 * (M_PI + (2.0 * std::asin(arg_astro_day_length))) / M_PI;
-    double arg_effective_day_length;
-    arg_effective_day_length = (-std::sin((8.0 * M_PI / 180.0)) + declination_sinus) / declination_cosinus;
+    double astronomic_day_length = 12.0 * (M_PI + (2.0 * std::asin(arg_astro_day_length))) / M_PI;
+    double arg_effective_day_length = (-std::sin((8.0 * M_PI / 180.0)) + declination_sinus) / declination_cosinus;
     arg_effective_day_length = bound(-1.0, arg_effective_day_length, 1.0);
-    double arg_photo_day_length;
-    arg_photo_day_length = (-std::sin((-6.0 * M_PI / 180.0)) + declination_sinus) / declination_cosinus;
+    double arg_photo_day_length = (-std::sin((-6.0 * M_PI / 180.0)) + declination_sinus) / declination_cosinus;
     arg_photo_day_length = bound(-1.0, arg_photo_day_length, 1.0);
-    double arg_phot_act;
-    arg_phot_act = std::min(1.0, declination_sinus / declination_cosinus * (declination_sinus / declination_cosinus));
-    double phot_act_radiation_mean;
-    phot_act_radiation_mean = 3600.0 * (declination_sinus * astronomic_day_length + (24.0 / M_PI * declination_cosinus * std::sqrt((1.0 - arg_phot_act))));
+    double arg_phot_act = std::min(1.0, declination_sinus / declination_cosinus * (declination_sinus / declination_cosinus));
+    double phot_act_radiation_mean = 3600.0 * (declination_sinus * astronomic_day_length + (24.0 / M_PI * declination_cosinus * std::sqrt((1.0 - arg_phot_act))));
     double clear_day_radiation = 0.0;
     if (phot_act_radiation_mean > 0.0 && astronomic_day_length > 0.0) {
         clear_day_radiation = 0.5 * 1300.0 * phot_act_radiation_mean * std::exp(-0.14 / (phot_act_radiation_mean / (astronomic_day_length * 3600.0)));
     }
-    double SC;
-    SC = 24.0 * 60.0 / M_PI * 8.20 * (1.0 + (0.033 * std::cos(2.0 * M_PI * julian_day / 365.0)));
-    double arg_SHA;
-    arg_SHA = bound(-1.0, -std::tan((latitude * M_PI / 180.0)) * std::tan(declination * M_PI / 180.0), 1.0);
-    double SHA;
-    SHA = std::acos(arg_SHA);
-    double extraterrestrial_radiation;
-    extraterrestrial_radiation = SC * (SHA * declination_sinus + (declination_cosinus * std::sin(SHA))) / 100.0;
-    double atmospheric_pressure;
-    atmospheric_pressure = 101.3 * std::pow((293.0 - (0.0065 * height_nn)) / 293.0, 5.26);
-    double psycrometer_constant;
-    psycrometer_constant = 0.000665 * atmospheric_pressure;
-    double saturated_vapor_pressure_max;
-    saturated_vapor_pressure_max = 0.6108 * std::exp(17.27 * max_air_temperature / (237.3 + max_air_temperature));
-    double saturated_vapor_pressure_min;
-    saturated_vapor_pressure_min = 0.6108 * std::exp(17.27 * min_air_temperature / (237.3 + min_air_temperature));
-    double saturated_vapor_pressure;
-    saturated_vapor_pressure = (saturated_vapor_pressure_max + saturated_vapor_pressure_min) / 2.0;
+    double SC = 24.0 * 60.0 / M_PI * 8.20 * (1.0 + (0.033 * std::cos(2.0 * M_PI * julian_day / 365.0)));
+    double arg_SHA = bound(-1.0, -std::tan((latitude * M_PI / 180.0)) * std::tan(declination * M_PI / 180.0), 1.0);
+    double SHA = std::acos(arg_SHA);
+    double extraterrestrial_radiation = SC * (SHA * declination_sinus + (declination_cosinus * std::sin(SHA))) / 100.0;
+    double atmospheric_pressure = 101.3 * std::pow((293.0 - (0.0065 * height_nn)) / 293.0, 5.26);
+    double psycrometer_constant = 0.000665 * atmospheric_pressure;
+    double saturated_vapor_pressure_max = 0.6108 * std::exp(17.27 * max_air_temperature / (237.3 + max_air_temperature));
+    double saturated_vapor_pressure_min = 0.6108 * std::exp(17.27 * min_air_temperature / (237.3 + min_air_temperature));
+    double saturated_vapor_pressure = (saturated_vapor_pressure_max + saturated_vapor_pressure_min) / 2.0;
     if (vapor_pressure < 0.0) {
         if (relative_humidity <= 0.0) {
             vapor_pressure = saturated_vapor_pressure_min;
@@ -611,27 +601,17 @@ std::tuple<double,double> Evapotranspiration::calc_reference_evapotranspiration(
             vapor_pressure = relative_humidity * saturated_vapor_pressure;
         }
     }
-    double saturation_deficit;
-    saturation_deficit = saturated_vapor_pressure - vapor_pressure;
-    double saturated_vapour_pressure_slope;
-    saturated_vapour_pressure_slope = 4098.0 * (0.6108 * std::exp(17.27 * mean_air_temperature / (mean_air_temperature + 237.3))) / ((mean_air_temperature + 237.3) * (mean_air_temperature + 237.3));
-    double wind_speed_2m;
-    wind_speed_2m = std::max(0.5, wind_speed * (4.87 / std::log((67.8 * wind_speed_height - 5.42))));
-    double surface_resistance;
-    surface_resistance = stomata_resistance / 1.44;
-    double clear_sky_solar_radiation;
-    clear_sky_solar_radiation = (0.75 + (0.00002 * height_nn)) * extraterrestrial_radiation;
-    double relative_shortwave_radiation;
-    relative_shortwave_radiation = clear_sky_solar_radiation > 0.0 ? std::min(global_radiation / clear_sky_solar_radiation, 1.0) : 1.0;
+    double saturation_deficit = saturated_vapor_pressure - vapor_pressure;
+    double saturated_vapour_pressure_slope = 4098.0 * (0.6108 * std::exp(17.27 * mean_air_temperature / (mean_air_temperature + 237.3))) / ((mean_air_temperature + 237.3) * (mean_air_temperature + 237.3));
+    double wind_speed_2m = std::max(0.5, wind_speed * (4.87 / std::log((67.8 * wind_speed_height - 5.42))));
+    double surface_resistance = stomata_resistance / 1.44;
+    double clear_sky_solar_radiation = (0.75 + (0.00002 * height_nn)) * extraterrestrial_radiation;
+    double relative_shortwave_radiation = clear_sky_solar_radiation > 0.0 ? std::min(global_radiation / clear_sky_solar_radiation, 1.0) : 1.0;
     double bolzmann_constant = 0.0000000049;
-    double shortwave_radiation;
-    shortwave_radiation = (1.0 - reference_albedo) * global_radiation;
-    double longwave_radiation;
-    longwave_radiation = bolzmann_constant * ((std::pow(min_air_temperature + 273.16, 4.0) + std::pow(max_air_temperature + 273.16, 4.0)) / 2.0) * (1.35 * relative_shortwave_radiation - 0.35) * (0.34 - (0.14 * std::sqrt(vapor_pressure)));
-    double net_radiation;
-    net_radiation = shortwave_radiation - longwave_radiation;
-    double reference_evapotranspiration;
-    reference_evapotranspiration = (0.408 * saturated_vapour_pressure_slope * net_radiation + (psycrometer_constant * (900.0 / (mean_air_temperature + 273.0)) * wind_speed_2m * saturation_deficit)) / (saturated_vapour_pressure_slope + (psycrometer_constant * (1.0 + (surface_resistance / 208.0 * wind_speed_2m))));
+    double shortwave_radiation = (1.0 - reference_albedo) * global_radiation;
+    double longwave_radiation = bolzmann_constant * ((std::pow(min_air_temperature + 273.16, 4.0) + std::pow(max_air_temperature + 273.16, 4.0)) / 2.0) * (1.35 * relative_shortwave_radiation - 0.35) * (0.34 - (0.14 * std::sqrt(vapor_pressure)));
+    double net_radiation = shortwave_radiation - longwave_radiation;
+    double reference_evapotranspiration = (0.408 * saturated_vapour_pressure_slope * net_radiation + (psycrometer_constant * (900.0 / (mean_air_temperature + 273.0)) * wind_speed_2m * saturation_deficit)) / (saturated_vapour_pressure_slope + (psycrometer_constant * (1.0 + (surface_resistance / 208.0 * wind_speed_2m))));
     if (reference_evapotranspiration < 0.0) {
         reference_evapotranspiration = 0.0;
     }
@@ -639,13 +619,12 @@ std::tuple<double,double> Evapotranspiration::calc_reference_evapotranspiration(
 }
 double Evapotranspiration::e_reducer_1(double pwp, double fc, double sm, double percentage_soil_coverage, double reference_evapotranspiration, int evaporation_reduction_method, double xsa_critical_soil_moisture)
 {
-    sm = std::max(0.33 * pwp, sm);
-    double relative_evaporable_water;
-    relative_evaporable_water = std::min(1.0, (sm - (0.33 * pwp)) / (fc - (0.33 * pwp)));
     double e_reduction_factor = 0.0;
     double critical_soil_moisture;
     double reducer;
     double xsa;
+    sm = std::max(0.33 * pwp, sm);
+    double relative_evaporable_water = std::min(1.0, (sm - (0.33 * pwp)) / (fc - (0.33 * pwp)));
     if (evaporation_reduction_method == 0) {
         critical_soil_moisture = 0.65 * fc;
         if (percentage_soil_coverage > 0.0) {

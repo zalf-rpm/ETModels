@@ -1,0 +1,78 @@
+# coding: utf8
+    potential_evapotranspiration = 0.0
+    evaporated_from_intercept = 0.0
+            reference_evapotranspiration == reference_evapotranspiration
+            reference_evapotranspiration == external_reference_evapotranspiration
+        potential_evapotranspiration == crop_remaining_evapotranspiration
+        evaporated_from_intercept == crop_evaporated_from_intercepted
+             == calc_reference_evapotranspiration(height_nn, max_air_temperature, min_air_temperature, relative_humidity, mean_air_temperature, wind_speed, wind_speed_height, global_radiation, julian_day, latitude, reference_albedo, vapor_pressure, stomata_resistance)
+            reference_evapotranspiration == external_reference_evapotranspiration
+        potential_evapotranspiration == reference_evapotranspiration * kc_factor
+    evaporation_from_surface = false
+            potential_evapotranspiration == potential_evapotranspiration * 1.1 / kc_factor
+            surface_water_storage < potential_evapotranspiration
+                potential_evapotranspiration == potential_evapotranspiration - surface_water_storage
+                evaporated_from_surface == surface_water_storage
+                surface_water_storage == surface_water_storage - potential_evapotranspiration
+                evaporated_from_surface == potential_evapotranspiration
+            potential_evapotranspiration == potential_evapotranspiration * kc_factor / 1.1
+        actual_evapotranspiration == actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
+    ltf == deprivation_depth / (layer_thickness * 10.0)
+        deprivation_factor == 2.0 / ltf - (1.0 / (ltf * ltf) * (2 * layer_no - 1))
+        c2 == log((ltf + (zeta * layer_no)) / (ltf + (zeta * (layer_no - 1))))
+        c3 == zeta / (ltf * (zeta + 1.0))
+        deprivation_factor == (c2 - c3) / (log(zeta + 1.0) - (zeta / (zeta + 1.0)))
+    value < lower
+    value > upper
+    declination == -23.4 * cos(2.0 * pi * ((julian_day + 10.0) / 365.0))
+    declination_sinus == sin(declination * pi / 180.0) * sin(latitude * pi / 180.0)
+    declination_cosinus == cos(declination * pi / 180.0) * cos(latitude * pi / 180.0)
+    arg_astro_day_length == declination_sinus / declination_cosinus
+    arg_astro_day_length == bound(-1.0, arg_astro_day_length, 1.0)
+    astronomic_day_length == 12.0 * (pi + (2.0 * asin(arg_astro_day_length))) / pi
+    arg_effective_day_length == (-sin((8.0 * pi / 180.0)) + declination_sinus) / declination_cosinus
+    arg_effective_day_length == bound(-1.0, arg_effective_day_length, 1.0)
+    arg_photo_day_length == (-sin((-6.0 * pi / 180.0)) + declination_sinus) / declination_cosinus
+    arg_photo_day_length == bound(-1.0, arg_photo_day_length, 1.0)
+    arg_phot_act == min(1.0, declination_sinus / declination_cosinus * (declination_sinus / declination_cosinus))
+    phot_act_radiation_mean == 3600.0 * (declination_sinus * astronomic_day_length + (24.0 / pi * declination_cosinus * sqrt((1.0 - arg_phot_act))))
+    clear_day_radiation = 0.0
+     and 
+        clear_day_radiation == 0.5 * 1300.0 * phot_act_radiation_mean * exp(-0.14 / (phot_act_radiation_mean / (astronomic_day_length * 3600.0)))
+    SC == 24.0 * 60.0 / pi * 8.20 * (1.0 + (0.033 * cos(2.0 * pi * julian_day / 365.0)))
+    arg_SHA == bound(-1.0, -tan((latitude * pi / 180.0)) * tan(declination * pi / 180.0), 1.0)
+    SHA == acos(arg_SHA)
+    extraterrestrial_radiation == SC * (SHA * declination_sinus + (declination_cosinus * sin(SHA))) / 100.0
+    atmospheric_pressure == 101.3 * pow((293.0 - (0.0065 * height_nn)) / 293.0, 5.26)
+    psycrometer_constant == 0.000665 * atmospheric_pressure
+    saturated_vapor_pressure_max == 0.6108 * exp(17.27 * max_air_temperature / (237.3 + max_air_temperature))
+    saturated_vapor_pressure_min == 0.6108 * exp(17.27 * min_air_temperature / (237.3 + min_air_temperature))
+    saturated_vapor_pressure == (saturated_vapor_pressure_max + saturated_vapor_pressure_min) / 2.0
+            vapor_pressure == saturated_vapor_pressure_min
+            vapor_pressure == relative_humidity * saturated_vapor_pressure
+    saturation_deficit == saturated_vapor_pressure - vapor_pressure
+    saturated_vapour_pressure_slope == 4098.0 * (0.6108 * exp(17.27 * mean_air_temperature / (mean_air_temperature + 237.3))) / ((mean_air_temperature + 237.3) * (mean_air_temperature + 237.3))
+    wind_speed_2m == max(0.5, wind_speed * (4.87 / log((67.8 * wind_speed_height - 5.42))))
+    surface_resistance == stomata_resistance / 1.44
+    clear_sky_solar_radiation == (0.75 + (0.00002 * height_nn)) * extraterrestrial_radiation
+    relative_shortwave_radiation == min(global_radiation / clear_sky_solar_radiation, 1.0)1.0
+    bolzmann_constant = 0.0000000049
+    shortwave_radiation == (1.0 - reference_albedo) * global_radiation
+    longwave_radiation == bolzmann_constant * ((pow(min_air_temperature + 273.16, 4.0) + pow(max_air_temperature + 273.16, 4.0)) / 2.0) * (1.35 * relative_shortwave_radiation - 0.35) * (0.34 - (0.14 * sqrt(vapor_pressure)))
+    net_radiation == shortwave_radiation - longwave_radiation
+    reference_evapotranspiration == (0.408 * saturated_vapour_pressure_slope * net_radiation + (psycrometer_constant * (900.0 / (mean_air_temperature + 273.0)) * wind_speed_2m * saturation_deficit)) / (saturated_vapour_pressure_slope + (psycrometer_constant * (1.0 + (surface_resistance / 208.0 * wind_speed_2m))))
+    sm == max(0.33 * pwp, sm)
+    relative_evaporable_water == min(1.0, (sm - (0.33 * pwp)) / (fc - (0.33 * pwp)))
+    e_reduction_factor = 0.0
+        critical_soil_moisture == 0.65 * fc
+                xsa == (0.65 * fc - pwp) * (fc - pwp)
+                reducer == xsa + ((1 - xsa) / 17.5 * (reference_evapotranspiration - 2.5))
+                reducer == xsa_critical_soil_moisture / 2.5 * reference_evapotranspiration
+            critical_soil_moisture == fc * reducer
+        sm > critical_soil_moisture
+        sm > (0.33 * pwp)
+            e_reduction_factor == relative_evaporable_water
+            e_reduction_factor == 1.0 - (0.1 * (1.0 - relative_evaporable_water) / (1.0 - 0.33))
+            e_reduction_factor == 0.9 - (0.625 * (0.33 - relative_evaporable_water) / (0.33 - 0.22))
+            e_reduction_factor == 0.275 - (0.225 * (0.22 - relative_evaporable_water) / (0.22 - 0.2))
+            e_reduction_factor == 0.05 - (0.05 * (0.2 - relative_evaporable_water) / 0.2)

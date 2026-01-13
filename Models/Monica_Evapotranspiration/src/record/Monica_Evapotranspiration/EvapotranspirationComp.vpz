@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE vle_project PUBLIC "-//VLE TEAM//DTD Strict//EN" "https://raw.githubusercontent.com/vle-forge/vle/master/share/dtd/vle-2.1.dtd">
+<vle_project version="0.5" date="Mon, 27 Dec 2010" author="Gauthier Quesnel">
+    <structures>
+        <model name="top" type="coupled" width="">
+            <in>
+                <port name="external_reference_evapotranspiration"/>
+                <port name="height_nn"/>
+                <port name="max_air_temperature"/>
+                <port name="minair_temperature"/>
+                <port name="mean_air_temperature"/>
+                <port name="relative_humidity"/>
+                <port name="wind_speed"/>
+                <port name="wind_speed_height"/>
+                <port name="global_radiation"/>
+                <port name="julian_day"/>
+                <port name="latitude"/>
+                <port name="evaporated_from_surface"/>
+                <port name="surface_water_storage"/>
+                <port name="snow_depth"/>
+                <port name="developmental_stage"/>
+                <port name="crop_reference_evapotranspiration"/>
+                <port name="reference_evapotranspiration"/>
+                <port name="actual_evaporation"/>
+                <port name="actual_transpiration"/>
+                <port name="kc_factor"/>
+                <port name="percentage_soil_coverage"/>
+                <port name="soil_moisture"/>
+                <port name="permanent_wilting_point"/>
+                <port name="field_capacity"/>
+                <port name="evaporation"/>
+                <port name="transpiration"/>
+                <port name="crop_transpiration"/>
+                <port name="crop_remaining_evapotranspiration"/>
+                <port name="crop_evaporated_from_intercepted"/>
+                <port name="evapotranspiration"/>
+                <port name="actual_evapotranspiration"/>
+                <port name="vapor_pressure"/></in>
+            <out>
+                <port name="evaporated_from_surface"/>
+                <port name="actual_evapotranspiration"/></out>
+            <submodels>
+                <model width=" " height=" " x=" " y=" " dynamics="Evapotranspiration" name="Evapotranspiration" type="atomic">
+                    <in>
+                        <port name="external_reference_evapotranspiration"/>
+                        <port name="height_nn"/>
+                        <port name="max_air_temperature"/>
+                        <port name="minair_temperature"/>
+                        <port name="mean_air_temperature"/>
+                        <port name="relative_humidity"/>
+                        <port name="wind_speed"/>
+                        <port name="wind_speed_height"/>
+                        <port name="global_radiation"/>
+                        <port name="julian_day"/>
+                        <port name="latitude"/>
+                        <port name="evaporated_from_surface"/>
+                        <port name="snow_depth"/>
+                        <port name="developmental_stage"/>
+                        <port name="crop_reference_evapotranspiration"/>
+                        <port name="reference_evapotranspiration"/>
+                        <port name="actual_evaporation"/>
+                        <port name="actual_transpiration"/>
+                        <port name="surface_water_storage"/>
+                        <port name="kc_factor"/>
+                        <port name="percentage_soil_coverage"/>
+                        <port name="soil_moisture"/>
+                        <port name="permanent_wilting_point"/>
+                        <port name="field_capacity"/>
+                        <port name="evaporation"/>
+                        <port name="transpiration"/>
+                        <port name="crop_transpiration"/>
+                        <port name="crop_remaining_evapotranspiration"/>
+                        <port name="crop_evaporated_from_intercepted"/>
+                        <port name="evapotranspiration"/>
+                        <port name="actual_evapotranspiration"/>
+                        <port name="vapor_pressure"/></in>
+                    <out>
+                        <port name="evaporated_from_surface"/>
+                        <port name="actual_evapotranspiration"/></out></model></submodels>
+            <connections>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="external_reference_evapotranspiration"/>
+                    <destination model="Evapotranspiration" port="external_reference_evapotranspiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="height_nn"/>
+                    <destination model="Evapotranspiration" port="height_nn"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="max_air_temperature"/>
+                    <destination model="Evapotranspiration" port="max_air_temperature"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="minair_temperature"/>
+                    <destination model="Evapotranspiration" port="minair_temperature"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="mean_air_temperature"/>
+                    <destination model="Evapotranspiration" port="mean_air_temperature"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="relative_humidity"/>
+                    <destination model="Evapotranspiration" port="relative_humidity"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="wind_speed"/>
+                    <destination model="Evapotranspiration" port="wind_speed"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="wind_speed_height"/>
+                    <destination model="Evapotranspiration" port="wind_speed_height"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="global_radiation"/>
+                    <destination model="Evapotranspiration" port="global_radiation"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="julian_day"/>
+                    <destination model="Evapotranspiration" port="julian_day"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="latitude"/>
+                    <destination model="Evapotranspiration" port="latitude"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="evaporated_from_surface"/>
+                    <destination model="Evapotranspiration" port="evaporated_from_surface"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="surface_water_storage"/>
+                    <destination model="Evapotranspiration" port="surface_water_storage"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="snow_depth"/>
+                    <destination model="Evapotranspiration" port="snow_depth"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="developmental_stage"/>
+                    <destination model="Evapotranspiration" port="developmental_stage"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="crop_reference_evapotranspiration"/>
+                    <destination model="Evapotranspiration" port="crop_reference_evapotranspiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="reference_evapotranspiration"/>
+                    <destination model="Evapotranspiration" port="reference_evapotranspiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="actual_evaporation"/>
+                    <destination model="Evapotranspiration" port="actual_evaporation"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="actual_transpiration"/>
+                    <destination model="Evapotranspiration" port="actual_transpiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="surface_water_storage"/>
+                    <destination model="Evapotranspiration" port="surface_water_storage"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="kc_factor"/>
+                    <destination model="Evapotranspiration" port="kc_factor"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="percentage_soil_coverage"/>
+                    <destination model="Evapotranspiration" port="percentage_soil_coverage"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="soil_moisture"/>
+                    <destination model="Evapotranspiration" port="soil_moisture"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="permanent_wilting_point"/>
+                    <destination model="Evapotranspiration" port="permanent_wilting_point"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="field_capacity"/>
+                    <destination model="Evapotranspiration" port="field_capacity"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="evaporation"/>
+                    <destination model="Evapotranspiration" port="evaporation"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="transpiration"/>
+                    <destination model="Evapotranspiration" port="transpiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="crop_transpiration"/>
+                    <destination model="Evapotranspiration" port="crop_transpiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="crop_remaining_evapotranspiration"/>
+                    <destination model="Evapotranspiration" port="crop_remaining_evapotranspiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="crop_evaporated_from_intercepted"/>
+                    <destination model="Evapotranspiration" port="crop_evaporated_from_intercepted"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="evapotranspiration"/>
+                    <destination model="Evapotranspiration" port="evapotranspiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="actual_evapotranspiration"/>
+                    <destination model="Evapotranspiration" port="actual_evapotranspiration"/></connection>
+                <connection type="input">
+                    <origin model="EvapotranspirationComp" port="vapor_pressure"/>
+                    <destination model="Evapotranspiration" port="vapor_pressure"/></connection></connections></model></structures>
+    <dynamics>
+        <dynamic library="Evapotranspiration" package="EvapotranspirationComp" name="Evapotranspiration"/></dynamics>
+    <experiment name=""/></vle_project>

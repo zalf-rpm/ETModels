@@ -1,58 +1,14 @@
-# developmental_stage = 0
-# external_reference_evapotranspiration = 0
-# reference_evapotranspiration = 0
-# kc_factor = 0
-# snow_depth = 0
-# no_of_soil_layers = 20
-# layer_thickness = []
-# soil_moisture = []
-# permanent_wilting_point = []
-# field_capacity = []
-# evaporation = []
-# transpiration = []
-# crop_transpiration = []
-# percentage_soil_coverage = 0
-# evapotranspiration = []
-# surface_water_storage = 0
-# maximum_evaporation_impact_depth = 0
-# evaporation_zeta = 0
-# height_nn = 0
-# max_air_temperature = 0
-# min_air_temperature = 0
-# relative_humidity = 0
-# mean_air_temperature = 0
-# wind_speed = 0
-# wind_speed_height = 0
-# global_radiation = 0
-# julian_day = 0
-# latitude = 0
-# reference_albedo = 0
-# vapor_pressure = 0
-# stomata_resistance = 100
-# crop_remaining_evapotranspiration = 0
-# crop_evaporated_from_intercepted = 0
-
-cdef bool evaporation_from_surface = False
-cdef float eRed1
-cdef float eRed2
-cdef float eRed3
-cdef float eReducer
-cdef int i
-
-cdef float potential_evapotranspiration = 0.0
-cdef float evaporated_from_intercept = 0.0
 evaporated_from_surface = 0.0
 
 #snow_depth = snowComponent->getSnowDepth();
-
-# calculate soil evaporation until max 0.4m depth
-# evaporation_zeta = _params.pm_EvaporationZeta;
 
 # @todo <b>Claas:</b> pm_MaximumEvaporationImpactDepth is dependent on soil type
 # something has to be done there
 # this is the depth until which the evaporation can penetrate maximally
 # maximum_evaporation_impact_depth = _params.pm_MaximumEvaporationImpactDepth;
 
+cdef float potential_evapotranspiration = 0.0
+cdef float evaporated_from_intercept = 0.0
 # If a crop grows, ETp is taken from crop module
 if developmental_stage > 0:
     # Reference evapotranspiration is only grabbed here for consistent output in monica.cpp
@@ -86,6 +42,12 @@ actual_transpiration = 0.0
 if potential_evapotranspiration > 6.5:
     potential_evapotranspiration = 6.5
 
+cdef bool evaporation_from_surface = False
+cdef float eRed1
+cdef float eRed2
+cdef float eRed3
+cdef float eReducer
+cdef int i
 if potential_evapotranspiration > 0.0:
     evaporation_from_surface = False
 

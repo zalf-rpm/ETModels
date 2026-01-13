@@ -72,9 +72,6 @@
         <Input name="evaporated_from_surface" description="evaporated_from_surface" inputtype="variable"
                variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
-        <Input name="surface_water_storage" description="surface_water_storage" inputtype="variable"
-               variablecategory="state"
-               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="snow_depth" description="depth of snow layer" inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="developmental_stage" description="MONICA crop developmental stage" inputtype="variable"
