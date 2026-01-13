@@ -10,9 +10,10 @@ def init_evapotranspiration(float evaporation_zeta,
                             float latitude,
                             float height_nn,
                             int no_of_soil_layers,
-                            float layer_thickness[no_of_soil_layers],
-                            float permanent_wilting_point[no_of_soil_layers],
-                            float field_capacity[no_of_soil_layers],
+                            int no_of_soil_moisture_layers,
+                            float layer_thickness[no_of_soil_moisture_layers],
+                            float permanent_wilting_point[no_of_soil_moisture_layers],
+                            float field_capacity[no_of_soil_moisture_layers],
                             float external_reference_evapotranspiration,
                             float max_air_temperature,
                             float min_air_temperature,
@@ -32,23 +33,23 @@ def init_evapotranspiration(float evaporation_zeta,
     cdef float surface_water_storage = 0.0
     cdef float kc_factor = 0.75
     cdef float percentage_soil_coverage = 0.0
-    cdef float soil_moisture[no_of_soil_layers]
-    cdef float evaporation[no_of_soil_layers]
-    cdef float transpiration[no_of_soil_layers]
-    cdef float crop_transpiration[no_of_soil_layers]
+    cdef float soil_moisture[no_of_soil_moisture_layers]
+    cdef float evaporation[no_of_soil_moisture_layers]
+    cdef float transpiration[no_of_soil_moisture_layers]
+    cdef float crop_transpiration[no_of_soil_moisture_layers]
     cdef float crop_remaining_evapotranspiration
     cdef float crop_evaporated_from_intercepted
-    cdef float evapotranspiration[no_of_soil_layers]
+    cdef float evapotranspiration[no_of_soil_moisture_layers]
     cdef float actual_evapotranspiration = 0.0
     cdef float vapor_pressure = 0.0
     cdef float net_radiation = 0.0
-    soil_moisture = array('f', [0.0]*no_of_soil_layers)
-    evaporation = array('f', [0.0]*no_of_soil_layers)
-    transpiration = array('f', [0.0]*no_of_soil_layers)
-    crop_transpiration = array('f', [0.0]*no_of_soil_layers)
+    soil_moisture = array('f', [0.0]*no_of_soil_moisture_layers)
+    evaporation = array('f', [0.0]*no_of_soil_moisture_layers)
+    transpiration = array('f', [0.0]*no_of_soil_moisture_layers)
+    crop_transpiration = array('f', [0.0]*no_of_soil_moisture_layers)
     crop_remaining_evapotranspiration = 0.0
     crop_evaporated_from_intercepted = 0.0
-    evapotranspiration = array('f', [0.0]*no_of_soil_layers)
+    evapotranspiration = array('f', [0.0]*no_of_soil_moisture_layers)
 
     return  evaporated_from_surface, snow_depth, developmental_stage, crop_reference_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, kc_factor, percentage_soil_coverage, soil_moisture, evaporation, transpiration, crop_transpiration, crop_remaining_evapotranspiration, crop_evaporated_from_intercepted, evapotranspiration, actual_evapotranspiration, vapor_pressure, net_radiation
 
@@ -61,9 +62,10 @@ def model_evapotranspiration(float evaporation_zeta,
                              float latitude,
                              float height_nn,
                              int no_of_soil_layers,
-                             float layer_thickness[no_of_soil_layers],
-                             float permanent_wilting_point[no_of_soil_layers],
-                             float field_capacity[no_of_soil_layers],
+                             int no_of_soil_moisture_layers,
+                             float layer_thickness[no_of_soil_moisture_layers],
+                             float permanent_wilting_point[no_of_soil_moisture_layers],
+                             float field_capacity[no_of_soil_moisture_layers],
                              float external_reference_evapotranspiration,
                              float max_air_temperature,
                              float min_air_temperature,
@@ -83,13 +85,13 @@ def model_evapotranspiration(float evaporation_zeta,
                              float surface_water_storage,
                              float kc_factor,
                              float percentage_soil_coverage,
-                             float soil_moisture[no_of_soil_layers],
-                             float evaporation[no_of_soil_layers],
-                             float transpiration[no_of_soil_layers],
-                             float crop_transpiration[no_of_soil_layers],
+                             float soil_moisture[no_of_soil_moisture_layers],
+                             float evaporation[no_of_soil_moisture_layers],
+                             float transpiration[no_of_soil_moisture_layers],
+                             float crop_transpiration[no_of_soil_moisture_layers],
                              float crop_remaining_evapotranspiration,
                              float crop_evaporated_from_intercepted,
-                             float evapotranspiration[no_of_soil_layers],
+                             float evapotranspiration[no_of_soil_moisture_layers],
                              float actual_evapotranspiration,
                              float vapor_pressure,
                              float net_radiation):

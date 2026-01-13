@@ -22,6 +22,7 @@ private:
     double latitude{0};
     double height_nn{0};
     int no_of_soil_layers{20};
+    int no_of_soil_moisture_layers{21};
     std::vector<double> layer_thickness;
     std::vector<double> permanent_wilting_point;
     std::vector<double> field_capacity;
@@ -66,6 +67,9 @@ public:
 
     int getno_of_soil_layers();
     void setno_of_soil_layers(int _no_of_soil_layers);
+
+    int getno_of_soil_moisture_layers();
+    void setno_of_soil_moisture_layers(int _no_of_soil_moisture_layers);
 
     std::vector<double> & getlayer_thickness();
     void setlayer_thickness(const std::vector<double> &  _layer_thickness);

@@ -9,6 +9,7 @@ EvapotranspirationCompComponent::EvapotranspirationCompComponent()
 double EvapotranspirationCompComponent::getevaporation_zeta(){ return this->evaporation_zeta; }
 double EvapotranspirationCompComponent::getmaximum_evaporation_impact_depth(){ return this->maximum_evaporation_impact_depth; }
 int EvapotranspirationCompComponent::getno_of_soil_layers(){ return this->no_of_soil_layers; }
+int EvapotranspirationCompComponent::getno_of_soil_moisture_layers(){ return this->no_of_soil_moisture_layers; }
 std::vector<double> & EvapotranspirationCompComponent::getlayer_thickness(){ return this->layer_thickness; }
 double EvapotranspirationCompComponent::getreference_albedo(){ return this->reference_albedo; }
 double EvapotranspirationCompComponent::getstomata_resistance(){ return this->stomata_resistance; }
@@ -30,6 +31,10 @@ void EvapotranspirationCompComponent::setmaximum_evaporation_impact_depth(double
 void EvapotranspirationCompComponent::setno_of_soil_layers(int _no_of_soil_layers)
 {
     _Evapotranspiration.setno_of_soil_layers(_no_of_soil_layers);
+}
+void EvapotranspirationCompComponent::setno_of_soil_moisture_layers(int _no_of_soil_moisture_layers)
+{
+    _Evapotranspiration.setno_of_soil_moisture_layers(_no_of_soil_moisture_layers);
 }
 void EvapotranspirationCompComponent::setlayer_thickness(const std::vector<double> & _layer_thickness)
 {
@@ -76,7 +81,8 @@ EvapotranspirationCompComponent::EvapotranspirationCompComponent(Evapotranspirat
     evaporation_zeta = toCopy.getevaporation_zeta();
     maximum_evaporation_impact_depth = toCopy.getmaximum_evaporation_impact_depth();
     no_of_soil_layers = toCopy.getno_of_soil_layers();
-    for (int i = 0; i < no_of_soil_layers; i++)
+    no_of_soil_moisture_layers = toCopy.getno_of_soil_moisture_layers();
+    for (int i = 0; i < no_of_soil_moisture_layers; i++)
 {
     layer_thickness[i] = toCopy.getlayer_thickness()[i];
 }
@@ -87,12 +93,12 @@ EvapotranspirationCompComponent::EvapotranspirationCompComponent(Evapotranspirat
     xsa_critical_soil_moisture = toCopy.getxsa_critical_soil_moisture();
     height_nn = toCopy.getheight_nn();
     latitude = toCopy.getlatitude();
-    for (int i = 0; i < no_of_soil_layers; i++)
+    for (int i = 0; i < no_of_soil_moisture_layers; i++)
 {
     permanent_wilting_point[i] = toCopy.getpermanent_wilting_point()[i];
 }
 
-    for (int i = 0; i < no_of_soil_layers; i++)
+    for (int i = 0; i < no_of_soil_moisture_layers; i++)
 {
     field_capacity[i] = toCopy.getfield_capacity()[i];
 }

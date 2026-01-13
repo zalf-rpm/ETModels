@@ -37,14 +37,17 @@
         <Input name="no_of_soil_layers" description="number of soil layers" inputtype="parameter"
                parametercategory="constant"
                datatype="INT" max="" min="0" default="20" unit="dimensionless"/>
+        <Input name="no_of_soil_moisture_layers" description="number of soil layers + 1" inputtype="parameter"
+               parametercategory="constant"
+               datatype="INT" max="" min="0" default="21" unit="dimensionless"/>
         <Input name="layer_thickness" description="layer thickness array" inputtype="parameter"
                parametercategory="constant"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="m"/>
         <Input name="permanent_wilting_point" description="permanent wilting point array" inputtype="parameter"
                parametercategory="constant"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m3/m3"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="m3/m3"/>
         <Input name="field_capacity" description="field capacity array" inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m3/m3"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="m3/m3"/>
 
         <!-- exogenous -->
         <Input name="external_reference_evapotranspiration" description="externally supplied ET0" inputtype="variable"
@@ -103,14 +106,14 @@
                variablecategory="state"
                datatype="DOUBLE" max="1" min="0" default="0" unit="m2/m2"/>
         <Input name="soil_moisture" description="soil moisture array" inputtype="variable" variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m3/m3"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="m3/m3"/>
         <Input name="evaporation" description="evaporation array" inputtype="variable" variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="mm"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="mm"/>
         <Input name="transpiration" description="transpiration array" inputtype="variable" variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="mm"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="mm"/>
         <Input name="crop_transpiration" description="crop transpiration array" inputtype="variable"
                variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="mm"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="mm"/>
         <Input name="crop_remaining_evapotranspiration" description="crop remaining evapotranspiration"
                inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="" default="" unit="mm"/>
@@ -119,7 +122,7 @@
                datatype="DOUBLE" max="" min="" default="" unit="mm"/>
         <Input name="evapotranspiration" description="evapotranspiration array" inputtype="variable"
                variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="mm"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="mm"/>
         <Input name="actual_evapotranspiration" description="actual evapotranspiration" inputtype="variable"
                variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
@@ -142,7 +145,7 @@
         <Output name="surface_water_storage" description="Simulates a virtual layer that contains the surface water"
                variablecategory="state" datatype="DOUBLE" max="" min="0" unit="mm"/>
         <Output name="soil_moisture" description="soil moisture array" variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" unit="m3/m3"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" unit="m3/m3"/>
         <Output name="vapor_pressure" description="vapor pressure" variablecategory="state"
                datatype="DOUBLE" max="" min="0" unit="kPa"/>
         <Output name="net_radiation" description="net radiation" variablecategory="state"

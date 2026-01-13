@@ -7,6 +7,7 @@ private:
     double evaporation_zeta{40};
     double maximum_evaporation_impact_depth{5};
     int no_of_soil_layers{20};
+    int no_of_soil_moisture_layers{21};
     std::vector<double> layer_thickness;
     double reference_albedo{0};
     double stomata_resistance{100};
@@ -33,6 +34,9 @@ public:
 
     int getno_of_soil_layers();
     void setno_of_soil_layers(int _no_of_soil_layers);
+
+    int getno_of_soil_moisture_layers();
+    void setno_of_soil_moisture_layers(int _no_of_soil_moisture_layers);
 
     std::vector<double> & getlayer_thickness();
     void setlayer_thickness(const std::vector<double> &  _layer_thickness);

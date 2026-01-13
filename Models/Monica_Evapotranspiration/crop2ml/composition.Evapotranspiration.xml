@@ -16,6 +16,7 @@
             <InputLink source="evaporation_zeta" target="Evapotranspiration.evaporation_zeta"/>
             <InputLink source="maximum_evaporation_impact_depth" target="Evapotranspiration.maximum_evaporation_impact_depth"/>
             <InputLink source="no_of_soil_layers" target="Evapotranspiration.no_of_soil_layers"/>
+            <InputLink source="no_of_soil_moisture_layers" target="Evapotranspiration.no_of_soil_moisture_layers"/>
             <InputLink source="layer_thickness" target="Evapotranspiration.layer_thickness"/>
             <InputLink source="reference_albedo" target="Evapotranspiration.reference_albedo"/>
             <InputLink source="stomata_resistance" target="Evapotranspiration.stomata_resistance"/>
