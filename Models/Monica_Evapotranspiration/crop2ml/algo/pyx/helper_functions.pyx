@@ -210,7 +210,7 @@ def calc_reference_evapotranspiration(float height_nn,
     if reference_evapotranspiration < 0.0:
       reference_evapotranspiration = 0.0
 
-    return reference_evapotranspiration, vapor_pressure#, net_radiation
+    return reference_evapotranspiration, vapor_pressure, net_radiation
 
 
 # Calculation of evaporation reduction by soil moisture content

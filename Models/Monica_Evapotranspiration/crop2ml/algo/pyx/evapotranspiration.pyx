@@ -23,7 +23,7 @@ if developmental_stage > 0:
     evaporated_from_intercept = crop_evaporated_from_intercepted #monica.cropGrowth()->get_EvaporatedFromIntercept();
 else: # if no crop grows ETp is calculated from ET0 * kc
     if external_reference_evapotranspiration < 0.0:
-        reference_evapotranspiration, vapor_pressure = \
+        reference_evapotranspiration, vapor_pressure, net_radiation = \
             calc_reference_evapotranspiration(height_nn, max_air_temperature,
                                               min_air_temperature, relative_humidity,
                                               mean_air_temperature, wind_speed,

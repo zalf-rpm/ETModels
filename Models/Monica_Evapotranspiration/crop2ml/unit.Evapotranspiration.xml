@@ -19,12 +19,6 @@
         <Input name="maximum_evaporation_impact_depth" description="maximumEvaporationImpactDepth" inputtype="parameter"
                parametercategory="constant"
                datatype="DOUBLE" max="" min="0" default="5" unit="dm"/>
-        <Input name="no_of_soil_layers" description="number of soil layers" inputtype="parameter"
-               parametercategory="constant"
-               datatype="INT" max="" min="0" default="20" unit="dimensionless"/>
-        <Input name="layer_thickness" description="layer thickness array" inputtype="parameter"
-               parametercategory="constant"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m"/>
         <Input name="reference_albedo" description="reference albedo" inputtype="parameter" parametercategory="constant"
                datatype="DOUBLE" max="1" min="0" default="0" unit="dimensionless"/>
         <Input name="stomata_resistance" description="stomata resistance" inputtype="parameter"
@@ -36,13 +30,26 @@
         <Input name="xsa_critical_soil_moisture" description="XSACriticalSoilMoisture" inputtype="parameter"
                parametercategory="constant"
                datatype="DOUBLE" max="1.5" min="0" default="0.1" unit="m3/m3"/>
+        <Input name="latitude" description="latitude" inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="90" min="-90" default="0" unit="degree"/>
+        <Input name="height_nn" description="height above sea leavel" inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="9999" min="-9999" default="0" unit="m"/>
+        <Input name="no_of_soil_layers" description="number of soil layers" inputtype="parameter"
+               parametercategory="constant"
+               datatype="INT" max="" min="0" default="20" unit="dimensionless"/>
+        <Input name="layer_thickness" description="layer thickness array" inputtype="parameter"
+               parametercategory="constant"
+               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m"/>
+        <Input name="permanent_wilting_point" description="permanent wilting point array" inputtype="parameter"
+               parametercategory="constant"
+               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m3/m3"/>
+        <Input name="field_capacity" description="field capacity array" inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m3/m3"/>
 
         <!-- exogenous -->
         <Input name="external_reference_evapotranspiration" description="externally supplied ET0" inputtype="variable"
                variablecategory="exogenous"
                datatype="DOUBLE" max="" min="0" default="-1" unit="mm"/>
-        <Input name="height_nn" description="height above sea leavel" inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="9999" min="-9999" default="0" unit="m"/>
         <Input name="max_air_temperature" description="daily maximum air temperature" inputtype="variable"
                variablecategory="exogenous"
                datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
@@ -65,8 +72,6 @@
                datatype="DOUBLE" max="50" min="0" default="0" unit="MJ/m2"/>
         <Input name="julian_day" description="day of year" inputtype="variable" variablecategory="exogenous"
                datatype="INT" max="366" min="1" default="1" unit="day"/>
-        <Input name="latitude" description="latitude" inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="90" min="-90" default="0" unit="degree"/>
 
         <!-- states -->
         <Input name="evaporated_from_surface" description="evaporated_from_surface" inputtype="variable"
@@ -99,13 +104,8 @@
                datatype="DOUBLE" max="1" min="0" default="0" unit="m2/m2"/>
         <Input name="soil_moisture" description="soil moisture array" inputtype="variable" variablecategory="state"
                datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="m3/m3"/>
-        <Input name="permanent_wilting_point" description="permanent wilting point array" inputtype="variable"
-               variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="2" min="0" default="0" unit="m3/m3"/>
-        <Input name="field_capacity" description="field capacity array" inputtype="variable" variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="1" min="0" default="0" unit="m3/m3"/>
         <Input name="evaporation" description="evaporation array" inputtype="variable" variablecategory="state"
-               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="1" min="0" default="0" unit="mm"/>
+               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="mm"/>
         <Input name="transpiration" description="transpiration array" inputtype="variable" variablecategory="state"
                datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" default="" unit="mm"/>
         <Input name="crop_transpiration" description="crop transpiration array" inputtype="variable"
@@ -125,14 +125,30 @@
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="vapor_pressure" description="vapor pressure" inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="kPa"/>
+        <Input name="net_radiation" description="net radiation" inputtype="variable" variablecategory="state"
+               datatype="DOUBLE" max="" min="0" default="0" unit="MJ/m2"/>
     </Inputs>
     <Outputs>
         <Output name="evaporated_from_surface" description="" variablecategory="state"
                 datatype="DOUBLE" max="" min="0" unit="mm"/>
         <Output name="actual_evapotranspiration" description="actual evapotranspiration" variablecategory="state"
                 datatype="DOUBLE" max="200" min="0" unit="mm"/>
+        <Output name="reference_evapotranspiration" description="reference evapotranspiration (ET0)"
+               variablecategory="state" datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="actual_evaporation" description="actual evaporation" variablecategory="state"
+               datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="actual_transpiration" description="actual transpiration" variablecategory="state"
+               datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="surface_water_storage" description="Simulates a virtual layer that contains the surface water"
+               variablecategory="state" datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="soil_moisture" description="soil moisture array" variablecategory="state"
+               datatype="DOUBLEARRAY" len="no_of_soil_layers" max="" min="" unit="m3/m3"/>
+        <Output name="vapor_pressure" description="vapor pressure" variablecategory="state"
+               datatype="DOUBLE" max="" min="0" unit="kPa"/>
+        <Output name="net_radiation" description="net radiation" variablecategory="state"
+               datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
     </Outputs>
-    <!--<Initialization name="init_evapotranspiration" language="cyml" filename="algo/pyx/init_evapotranspiration.pyx"/>-->
+    <Initialization name="init_evapotranspiration" language="cyml" filename="algo/pyx/init_evapotranspiration.pyx"/>
     <Function name="helper_functions" description="helper functions for evapotranspiration code" language="cyml"
               type="external" filename="algo/pyx/helper_functions.pyx"/>
     <Algorithm language="cyml" platform="" filename="algo/pyx/evapotranspiration.pyx"/>

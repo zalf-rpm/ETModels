@@ -9,7 +9,6 @@ namespace Monica_Evapotranspiration {
 struct EvapotranspirationCompExogenous
 {
     double external_reference_evapotranspiration{-1};
-    double height_nn{0};
     double max_air_temperature{0};
     double min_air_temperature{0};
     double mean_air_temperature{0};
@@ -18,6 +17,5 @@ struct EvapotranspirationCompExogenous
     double wind_speed_height{2};
     double global_radiation{0};
     int julian_day{1};
-    double latitude{0};
 };
 }

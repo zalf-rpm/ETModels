@@ -18,8 +18,6 @@ struct EvapotranspirationCompState
     double kc_factor{0.75};
     double percentage_soil_coverage{0};
     std::vector<double> soil_moisture;
-    std::vector<double> permanent_wilting_point;
-    std::vector<double> field_capacity;
     std::vector<double> evaporation;
     std::vector<double> transpiration;
     std::vector<double> crop_transpiration;
@@ -28,5 +26,6 @@ struct EvapotranspirationCompState
     std::vector<double> evapotranspiration;
     double actual_evapotranspiration{0};
     double vapor_pressure{0};
+    double net_radiation{0};
 };
 }

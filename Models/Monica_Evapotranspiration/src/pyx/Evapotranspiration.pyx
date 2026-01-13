@@ -1,16 +1,70 @@
 import numpy
 from math import *
 
+def init_evapotranspiration(float evaporation_zeta,
+                            float maximum_evaporation_impact_depth,
+                            float reference_albedo,
+                            float stomata_resistance,
+                            int evaporation_reduction_method,
+                            float xsa_critical_soil_moisture,
+                            float latitude,
+                            float height_nn,
+                            int no_of_soil_layers,
+                            float layer_thickness[no_of_soil_layers],
+                            float permanent_wilting_point[no_of_soil_layers],
+                            float field_capacity[no_of_soil_layers],
+                            float external_reference_evapotranspiration,
+                            float max_air_temperature,
+                            float min_air_temperature,
+                            float mean_air_temperature,
+                            float relative_humidity,
+                            float wind_speed,
+                            float wind_speed_height,
+                            float global_radiation,
+                            int julian_day):
+    cdef float evaporated_from_surface = 0.0
+    cdef float snow_depth = 0.0
+    cdef int developmental_stage = 0
+    cdef float crop_reference_evapotranspiration = -1.0
+    cdef float reference_evapotranspiration = 0.0
+    cdef float actual_evaporation = 0.0
+    cdef float actual_transpiration = 0.0
+    cdef float surface_water_storage = 0.0
+    cdef float kc_factor = 0.75
+    cdef float percentage_soil_coverage = 0.0
+    cdef float soil_moisture[no_of_soil_layers]
+    cdef float evaporation[no_of_soil_layers]
+    cdef float transpiration[no_of_soil_layers]
+    cdef float crop_transpiration[no_of_soil_layers]
+    cdef float crop_remaining_evapotranspiration
+    cdef float crop_evaporated_from_intercepted
+    cdef float evapotranspiration[no_of_soil_layers]
+    cdef float actual_evapotranspiration = 0.0
+    cdef float vapor_pressure = 0.0
+    cdef float net_radiation = 0.0
+    soil_moisture = array('f', [0.0]*no_of_soil_layers)
+    evaporation = array('f', [0.0]*no_of_soil_layers)
+    transpiration = array('f', [0.0]*no_of_soil_layers)
+    crop_transpiration = array('f', [0.0]*no_of_soil_layers)
+    crop_remaining_evapotranspiration = 0.0
+    crop_evaporated_from_intercepted = 0.0
+    evapotranspiration = array('f', [0.0]*no_of_soil_layers)
+
+    return  evaporated_from_surface, snow_depth, developmental_stage, crop_reference_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, kc_factor, percentage_soil_coverage, soil_moisture, evaporation, transpiration, crop_transpiration, crop_remaining_evapotranspiration, crop_evaporated_from_intercepted, evapotranspiration, actual_evapotranspiration, vapor_pressure, net_radiation
+
 def model_evapotranspiration(float evaporation_zeta,
                              float maximum_evaporation_impact_depth,
-                             int no_of_soil_layers,
-                             float layer_thickness[no_of_soil_layers],
                              float reference_albedo,
                              float stomata_resistance,
                              int evaporation_reduction_method,
                              float xsa_critical_soil_moisture,
-                             float external_reference_evapotranspiration,
+                             float latitude,
                              float height_nn,
+                             int no_of_soil_layers,
+                             float layer_thickness[no_of_soil_layers],
+                             float permanent_wilting_point[no_of_soil_layers],
+                             float field_capacity[no_of_soil_layers],
+                             float external_reference_evapotranspiration,
                              float max_air_temperature,
                              float min_air_temperature,
                              float mean_air_temperature,
@@ -19,7 +73,6 @@ def model_evapotranspiration(float evaporation_zeta,
                              float wind_speed_height,
                              float global_radiation,
                              int julian_day,
-                             float latitude,
                              float evaporated_from_surface,
                              float snow_depth,
                              int developmental_stage,
@@ -31,8 +84,6 @@ def model_evapotranspiration(float evaporation_zeta,
                              float kc_factor,
                              float percentage_soil_coverage,
                              float soil_moisture[no_of_soil_layers],
-                             float permanent_wilting_point[no_of_soil_layers],
-                             float field_capacity[no_of_soil_layers],
                              float evaporation[no_of_soil_layers],
                              float transpiration[no_of_soil_layers],
                              float crop_transpiration[no_of_soil_layers],
@@ -40,7 +91,8 @@ def model_evapotranspiration(float evaporation_zeta,
                              float crop_evaporated_from_intercepted,
                              float evapotranspiration[no_of_soil_layers],
                              float actual_evapotranspiration,
-                             float vapor_pressure):
+                             float vapor_pressure,
+                             float net_radiation):
     """
     Model of evapotranspiration
     Author: Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)
@@ -71,7 +123,7 @@ def model_evapotranspiration(float evaporation_zeta,
         evaporated_from_intercept = crop_evaporated_from_intercepted #monica.cropGrowth()->get_EvaporatedFromIntercept();
     else: # if no crop grows ETp is calculated from ET0 * kc
         if external_reference_evapotranspiration < 0.0:
-            reference_evapotranspiration, vapor_pressure = \
+            reference_evapotranspiration, vapor_pressure, net_radiation = \
                 calc_reference_evapotranspiration(height_nn, max_air_temperature,
                                                   min_air_temperature, relative_humidity,
                                                   mean_air_temperature, wind_speed,
@@ -164,7 +216,7 @@ def model_evapotranspiration(float evaporation_zeta,
                 actual_transpiration += transpiration[i]
                 actual_evaporation += evaporation[i]
         actual_evapotranspiration = actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
-    return  evaporated_from_surface, actual_evapotranspiration
+    return  evaporated_from_surface, actual_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, soil_moisture, vapor_pressure, net_radiation
 
 
 
@@ -372,7 +424,7 @@ def calc_reference_evapotranspiration(float height_nn,
     if reference_evapotranspiration < 0.0:
       reference_evapotranspiration = 0.0
 
-    return reference_evapotranspiration, vapor_pressure#, net_radiation
+    return reference_evapotranspiration, vapor_pressure, net_radiation
 
 
 # Calculation of evaporation reduction by soil moisture content

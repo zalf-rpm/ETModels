@@ -1,4 +1,3 @@
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -11,25 +10,65 @@
 #include <tuple>
 #include "Evapotranspiration.h"
 using namespace Monica_Evapotranspiration;
+void Evapotranspiration::Init(EvapotranspirationCompState &s, EvapotranspirationCompState &s1, EvapotranspirationCompRate &r, EvapotranspirationCompAuxiliary &a, EvapotranspirationCompExogenous &ex)
+{
+    s.evaporated_from_surface = 0.0;
+    s.snow_depth = 0.0;
+    s.developmental_stage = 0;
+    s.crop_reference_evapotranspiration = -1.0;
+    s.reference_evapotranspiration = 0.0;
+    s.actual_evaporation = 0.0;
+    s.actual_transpiration = 0.0;
+    s.surface_water_storage = 0.0;
+    s.kc_factor = 0.75;
+    s.percentage_soil_coverage = 0.0;
+    s.soil_moisture = std::vector<double>(no_of_soil_layers);
+    s.evaporation = std::vector<double>(no_of_soil_layers);
+    s.transpiration = std::vector<double>(no_of_soil_layers);
+    s.crop_transpiration = std::vector<double>(no_of_soil_layers);
+    s.evapotranspiration = std::vector<double>(no_of_soil_layers);
+    s.actual_evapotranspiration = 0.0;
+    s.vapor_pressure = 0.0;
+    s.net_radiation = 0.0;
+    s.soil_moisture = std::move(std::vector<double>(no_of_soil_layers, 0.0));
+    s.evaporation = std::move(std::vector<double>(no_of_soil_layers, 0.0));
+    s.transpiration = std::move(std::vector<double>(no_of_soil_layers, 0.0));
+    s.crop_transpiration = std::move(std::vector<double>(no_of_soil_layers, 0.0));
+    s.crop_remaining_evapotranspiration = 0.0;
+    s.crop_evaporated_from_intercepted = 0.0;
+    s.evapotranspiration = std::move(std::vector<double>(no_of_soil_layers, 0.0));
+}
 Evapotranspiration::Evapotranspiration() {}
 double Evapotranspiration::getevaporation_zeta() { return this->evaporation_zeta; }
 double Evapotranspiration::getmaximum_evaporation_impact_depth() { return this->maximum_evaporation_impact_depth; }
-int Evapotranspiration::getno_of_soil_layers() { return this->no_of_soil_layers; }
-std::vector<double> & Evapotranspiration::getlayer_thickness() { return this->layer_thickness; }
 double Evapotranspiration::getreference_albedo() { return this->reference_albedo; }
 double Evapotranspiration::getstomata_resistance() { return this->stomata_resistance; }
 int Evapotranspiration::getevaporation_reduction_method() { return this->evaporation_reduction_method; }
 double Evapotranspiration::getxsa_critical_soil_moisture() { return this->xsa_critical_soil_moisture; }
+double Evapotranspiration::getlatitude() { return this->latitude; }
+double Evapotranspiration::getheight_nn() { return this->height_nn; }
+int Evapotranspiration::getno_of_soil_layers() { return this->no_of_soil_layers; }
+std::vector<double> & Evapotranspiration::getlayer_thickness() { return this->layer_thickness; }
+std::vector<double> & Evapotranspiration::getpermanent_wilting_point() { return this->permanent_wilting_point; }
+std::vector<double> & Evapotranspiration::getfield_capacity() { return this->field_capacity; }
 void Evapotranspiration::setevaporation_zeta(double _evaporation_zeta) { this->evaporation_zeta = _evaporation_zeta; }
 void Evapotranspiration::setmaximum_evaporation_impact_depth(double _maximum_evaporation_impact_depth) { this->maximum_evaporation_impact_depth = _maximum_evaporation_impact_depth; }
-void Evapotranspiration::setno_of_soil_layers(int _no_of_soil_layers) { this->no_of_soil_layers = _no_of_soil_layers; }
-void Evapotranspiration::setlayer_thickness(std::vector<double> const &_layer_thickness){
-    this->layer_thickness = _layer_thickness;
-}
 void Evapotranspiration::setreference_albedo(double _reference_albedo) { this->reference_albedo = _reference_albedo; }
 void Evapotranspiration::setstomata_resistance(double _stomata_resistance) { this->stomata_resistance = _stomata_resistance; }
 void Evapotranspiration::setevaporation_reduction_method(int _evaporation_reduction_method) { this->evaporation_reduction_method = _evaporation_reduction_method; }
 void Evapotranspiration::setxsa_critical_soil_moisture(double _xsa_critical_soil_moisture) { this->xsa_critical_soil_moisture = _xsa_critical_soil_moisture; }
+void Evapotranspiration::setlatitude(double _latitude) { this->latitude = _latitude; }
+void Evapotranspiration::setheight_nn(double _height_nn) { this->height_nn = _height_nn; }
+void Evapotranspiration::setno_of_soil_layers(int _no_of_soil_layers) { this->no_of_soil_layers = _no_of_soil_layers; }
+void Evapotranspiration::setlayer_thickness(std::vector<double> const &_layer_thickness){
+    this->layer_thickness = _layer_thickness;
+}
+void Evapotranspiration::setpermanent_wilting_point(std::vector<double> const &_permanent_wilting_point){
+    this->permanent_wilting_point = _permanent_wilting_point;
+}
+void Evapotranspiration::setfield_capacity(std::vector<double> const &_field_capacity){
+    this->field_capacity = _field_capacity;
+}
 void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, EvapotranspirationCompState &s1, EvapotranspirationCompRate &r, EvapotranspirationCompAuxiliary &a, EvapotranspirationCompExogenous &ex)
 {
     //- Name: Evapotranspiration -Version: 1, -Time step: 1
@@ -59,25 +98,6 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 0
     //                          ** default : 5
     //                          ** unit : dm
-    //            * name: no_of_soil_layers
-    //                          ** description : number of soil layers
-    //                          ** inputtype : parameter
-    //                          ** parametercategory : constant
-    //                          ** datatype : INT
-    //                          ** max : 
-    //                          ** min : 0
-    //                          ** default : 20
-    //                          ** unit : dimensionless
-    //            * name: layer_thickness
-    //                          ** description : layer thickness array
-    //                          ** inputtype : parameter
-    //                          ** parametercategory : constant
-    //                          ** datatype : DOUBLEARRAY
-    //                          ** len : no_of_soil_layers
-    //                          ** max : 
-    //                          ** min : 
-    //                          ** default : 
-    //                          ** unit : m
     //            * name: reference_albedo
     //                          ** description : reference albedo
     //                          ** inputtype : parameter
@@ -114,6 +134,63 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 0
     //                          ** default : 0.1
     //                          ** unit : m3/m3
+    //            * name: latitude
+    //                          ** description : latitude
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
+    //                          ** datatype : DOUBLE
+    //                          ** max : 90
+    //                          ** min : -90
+    //                          ** default : 0
+    //                          ** unit : degree
+    //            * name: height_nn
+    //                          ** description : height above sea leavel
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
+    //                          ** datatype : DOUBLE
+    //                          ** max : 9999
+    //                          ** min : -9999
+    //                          ** default : 0
+    //                          ** unit : m
+    //            * name: no_of_soil_layers
+    //                          ** description : number of soil layers
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
+    //                          ** datatype : INT
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** default : 20
+    //                          ** unit : dimensionless
+    //            * name: layer_thickness
+    //                          ** description : layer thickness array
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
+    //                          ** datatype : DOUBLEARRAY
+    //                          ** len : no_of_soil_layers
+    //                          ** max : 
+    //                          ** min : 
+    //                          ** default : 
+    //                          ** unit : m
+    //            * name: permanent_wilting_point
+    //                          ** description : permanent wilting point array
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
+    //                          ** datatype : DOUBLEARRAY
+    //                          ** len : no_of_soil_layers
+    //                          ** max : 
+    //                          ** min : 
+    //                          ** default : 
+    //                          ** unit : m3/m3
+    //            * name: field_capacity
+    //                          ** description : field capacity array
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
+    //                          ** datatype : DOUBLEARRAY
+    //                          ** len : no_of_soil_layers
+    //                          ** max : 
+    //                          ** min : 
+    //                          ** default : 
+    //                          ** unit : m3/m3
     //            * name: external_reference_evapotranspiration
     //                          ** description : externally supplied ET0
     //                          ** inputtype : variable
@@ -123,15 +200,6 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 0
     //                          ** default : -1
     //                          ** unit : mm
-    //            * name: height_nn
-    //                          ** description : height above sea leavel
-    //                          ** inputtype : variable
-    //                          ** variablecategory : exogenous
-    //                          ** datatype : DOUBLE
-    //                          ** max : 9999
-    //                          ** min : -9999
-    //                          ** default : 0
-    //                          ** unit : m
     //            * name: max_air_temperature
     //                          ** description : daily maximum air temperature
     //                          ** inputtype : variable
@@ -204,15 +272,6 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 1
     //                          ** default : 1
     //                          ** unit : day
-    //            * name: latitude
-    //                          ** description : latitude
-    //                          ** inputtype : variable
-    //                          ** variablecategory : exogenous
-    //                          ** datatype : DOUBLE
-    //                          ** max : 90
-    //                          ** min : -90
-    //                          ** default : 0
-    //                          ** unit : degree
     //            * name: evaporated_from_surface
     //                          ** description : evaporated_from_surface
     //                          ** inputtype : variable
@@ -313,35 +372,15 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 
     //                          ** default : 
     //                          ** unit : m3/m3
-    //            * name: permanent_wilting_point
-    //                          ** description : permanent wilting point array
-    //                          ** inputtype : variable
-    //                          ** variablecategory : state
-    //                          ** datatype : DOUBLEARRAY
-    //                          ** len : no_of_soil_layers
-    //                          ** max : 2
-    //                          ** min : 0
-    //                          ** default : 0
-    //                          ** unit : m3/m3
-    //            * name: field_capacity
-    //                          ** description : field capacity array
-    //                          ** inputtype : variable
-    //                          ** variablecategory : state
-    //                          ** datatype : DOUBLEARRAY
-    //                          ** len : no_of_soil_layers
-    //                          ** max : 1
-    //                          ** min : 0
-    //                          ** default : 0
-    //                          ** unit : m3/m3
     //            * name: evaporation
     //                          ** description : evaporation array
     //                          ** inputtype : variable
     //                          ** variablecategory : state
     //                          ** datatype : DOUBLEARRAY
     //                          ** len : no_of_soil_layers
-    //                          ** max : 1
-    //                          ** min : 0
-    //                          ** default : 0
+    //                          ** max : 
+    //                          ** min : 
+    //                          ** default : 
     //                          ** unit : mm
     //            * name: transpiration
     //                          ** description : transpiration array
@@ -409,6 +448,15 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** min : 0
     //                          ** default : 0
     //                          ** unit : kPa
+    //            * name: net_radiation
+    //                          ** description : net radiation
+    //                          ** inputtype : variable
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** default : 0
+    //                          ** unit : MJ/m2
     //- outputs:
     //            * name: evaporated_from_surface
     //                          ** description : 
@@ -424,6 +472,56 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     //                          ** max : 200
     //                          ** min : 0
     //                          ** unit : mm
+    //            * name: reference_evapotranspiration
+    //                          ** description : reference evapotranspiration (ET0)
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** unit : mm
+    //            * name: actual_evaporation
+    //                          ** description : actual evaporation
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** unit : mm
+    //            * name: actual_transpiration
+    //                          ** description : actual transpiration
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** unit : mm
+    //            * name: surface_water_storage
+    //                          ** description : Simulates a virtual layer that contains the surface water
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** unit : mm
+    //            * name: soil_moisture
+    //                          ** description : soil moisture array
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLEARRAY
+    //                          ** len : no_of_soil_layers
+    //                          ** max : 
+    //                          ** min : 
+    //                          ** unit : m3/m3
+    //            * name: vapor_pressure
+    //                          ** description : vapor pressure
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** unit : kPa
+    //            * name: net_radiation
+    //                          ** description : net radiation
+    //                          ** variablecategory : state
+    //                          ** datatype : DOUBLE
+    //                          ** max : 
+    //                          ** min : 0
+    //                          ** unit : MJ/m2
     s.evaporated_from_surface = 0.0;
     double potential_evapotranspiration = 0.0;
     double evaporated_from_intercept = 0.0;
@@ -439,7 +537,7 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
     }
     else {
         if (ex.external_reference_evapotranspiration < 0.0) {
-            tie(s.reference_evapotranspiration, s.vapor_pressure) = calc_reference_evapotranspiration(ex.height_nn, ex.max_air_temperature, ex.min_air_temperature, ex.relative_humidity, ex.mean_air_temperature, ex.wind_speed, ex.wind_speed_height, ex.global_radiation, ex.julian_day, ex.latitude, reference_albedo, s.vapor_pressure, stomata_resistance);
+            std::tie(s.reference_evapotranspiration, s.vapor_pressure, s.net_radiation) = calc_reference_evapotranspiration(height_nn, ex.max_air_temperature, ex.min_air_temperature, ex.relative_humidity, ex.mean_air_temperature, ex.wind_speed, ex.wind_speed_height, ex.global_radiation, ex.julian_day, latitude, reference_albedo, s.vapor_pressure, stomata_resistance);
         }
         else {
             s.reference_evapotranspiration = ex.external_reference_evapotranspiration;
@@ -479,7 +577,7 @@ void Evapotranspiration::Calculate_Model(EvapotranspirationCompState &s, Evapotr
         }
         if (potential_evapotranspiration > 0.0) {
             for (i=0; i!=no_of_soil_layers; i+=1) {
-                eRed1 = e_reducer_1(s.permanent_wilting_point[i], s.field_capacity[i], s.soil_moisture[i], s.percentage_soil_coverage, potential_evapotranspiration, evaporation_reduction_method, xsa_critical_soil_moisture);
+                eRed1 = e_reducer_1(permanent_wilting_point[i], field_capacity[i], s.soil_moisture[i], s.percentage_soil_coverage, potential_evapotranspiration, evaporation_reduction_method, xsa_critical_soil_moisture);
                 eRed2 = 0.0;
                 if (float(i) >= maximum_evaporation_impact_depth) {
                     eRed2 = 0.0;
@@ -558,7 +656,7 @@ double Evapotranspiration::bound(double lower, double value, double upper)
     }
     return value;
 }
-std::tuple<double,double> Evapotranspiration::calc_reference_evapotranspiration(double height_nn, double max_air_temperature, double min_air_temperature, double relative_humidity, double mean_air_temperature, double wind_speed, double wind_speed_height, double global_radiation, int julian_day, double latitude, double reference_albedo, double vapor_pressure, double stomata_resistance)
+std::tuple<double,double,double> Evapotranspiration::calc_reference_evapotranspiration(double height_nn, double max_air_temperature, double min_air_temperature, double relative_humidity, double mean_air_temperature, double wind_speed, double wind_speed_height, double global_radiation, int julian_day, double latitude, double reference_albedo, double vapor_pressure, double stomata_resistance)
 {
     double declination;
     declination = -23.4 * std::cos(2.0 * M_PI * ((julian_day + 10.0) / 365.0));
@@ -635,7 +733,7 @@ std::tuple<double,double> Evapotranspiration::calc_reference_evapotranspiration(
     if (reference_evapotranspiration < 0.0) {
         reference_evapotranspiration = 0.0;
     }
-    return make_tuple(reference_evapotranspiration, vapor_pressure);
+    return std::make_tuple(reference_evapotranspiration, vapor_pressure, net_radiation);
 }
 double Evapotranspiration::e_reducer_1(double pwp, double fc, double sm, double percentage_soil_coverage, double reference_evapotranspiration, int evaporation_reduction_method, double xsa_critical_soil_moisture)
 {

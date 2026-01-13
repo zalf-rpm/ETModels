@@ -14,6 +14,10 @@ double EvapotranspirationCompComponent::getreference_albedo(){ return this->refe
 double EvapotranspirationCompComponent::getstomata_resistance(){ return this->stomata_resistance; }
 int EvapotranspirationCompComponent::getevaporation_reduction_method(){ return this->evaporation_reduction_method; }
 double EvapotranspirationCompComponent::getxsa_critical_soil_moisture(){ return this->xsa_critical_soil_moisture; }
+double EvapotranspirationCompComponent::getheight_nn(){ return this->height_nn; }
+double EvapotranspirationCompComponent::getlatitude(){ return this->latitude; }
+std::vector<double> & EvapotranspirationCompComponent::getpermanent_wilting_point(){ return this->permanent_wilting_point; }
+std::vector<double> & EvapotranspirationCompComponent::getfield_capacity(){ return this->field_capacity; }
 
 void EvapotranspirationCompComponent::setevaporation_zeta(double _evaporation_zeta)
 {
@@ -47,6 +51,22 @@ void EvapotranspirationCompComponent::setxsa_critical_soil_moisture(double _xsa_
 {
     _Evapotranspiration.setxsa_critical_soil_moisture(_xsa_critical_soil_moisture);
 }
+void EvapotranspirationCompComponent::setheight_nn(double _height_nn)
+{
+    _Evapotranspiration.setheight_nn(_height_nn);
+}
+void EvapotranspirationCompComponent::setlatitude(double _latitude)
+{
+    _Evapotranspiration.setlatitude(_latitude);
+}
+void EvapotranspirationCompComponent::setpermanent_wilting_point(const std::vector<double> & _permanent_wilting_point)
+{
+    _Evapotranspiration.setpermanent_wilting_point(_permanent_wilting_point);
+}
+void EvapotranspirationCompComponent::setfield_capacity(const std::vector<double> & _field_capacity)
+{
+    _Evapotranspiration.setfield_capacity(_field_capacity);
+}
 void EvapotranspirationCompComponent::Calculate_Model(EvapotranspirationCompState &s, EvapotranspirationCompState &s1, EvapotranspirationCompRate &r, EvapotranspirationCompAuxiliary &a, EvapotranspirationCompExogenous &ex)
 {
     _Evapotranspiration.Calculate_Model(s, s1, r, a, ex);
@@ -65,4 +85,22 @@ EvapotranspirationCompComponent::EvapotranspirationCompComponent(Evapotranspirat
     stomata_resistance = toCopy.getstomata_resistance();
     evaporation_reduction_method = toCopy.getevaporation_reduction_method();
     xsa_critical_soil_moisture = toCopy.getxsa_critical_soil_moisture();
+    height_nn = toCopy.getheight_nn();
+    latitude = toCopy.getlatitude();
+    for (int i = 0; i < no_of_soil_layers; i++)
+{
+    permanent_wilting_point[i] = toCopy.getpermanent_wilting_point()[i];
+}
+
+    for (int i = 0; i < no_of_soil_layers; i++)
+{
+    field_capacity[i] = toCopy.getfield_capacity()[i];
+}
+
+}
+
+
+void EvapotranspirationCompComponent::Init(EvapotranspirationCompState &s, EvapotranspirationCompState &s1, EvapotranspirationCompRate &r, EvapotranspirationCompAuxiliary &a, EvapotranspirationCompExogenous &ex)
+{
+    _Evapotranspiration.Init(s, s1, r, a, ex);
 }

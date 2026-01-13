@@ -12,6 +12,10 @@ private:
     double stomata_resistance{100};
     int evaporation_reduction_method{1};
     double xsa_critical_soil_moisture{0.1};
+    double height_nn{0};
+    double latitude{0};
+    std::vector<double> permanent_wilting_point;
+    std::vector<double> field_capacity;
 public:
     EvapotranspirationCompComponent();
 
@@ -44,6 +48,18 @@ public:
 
     double getxsa_critical_soil_moisture();
     void setxsa_critical_soil_moisture(double _xsa_critical_soil_moisture);
+
+    double getheight_nn();
+    void setheight_nn(double _height_nn);
+
+    double getlatitude();
+    void setlatitude(double _latitude);
+
+    std::vector<double> & getpermanent_wilting_point();
+    void setpermanent_wilting_point(const std::vector<double> &  _permanent_wilting_point);
+
+    std::vector<double> & getfield_capacity();
+    void setfield_capacity(const std::vector<double> &  _field_capacity);
 
     Evapotranspiration _Evapotranspiration;
 

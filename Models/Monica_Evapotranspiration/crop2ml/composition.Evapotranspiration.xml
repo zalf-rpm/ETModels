@@ -54,8 +54,16 @@
             <InputLink source="evapotranspiration" target="Evapotranspiration.evapotranspiration"/>
             <InputLink source="actual_evapotranspiration" target="Evapotranspiration.actual_evapotranspiration"/>
             <InputLink source="vapor_pressure" target="Evapotranspiration.vapor_pressure"/>
+            <InputLink source="net_radiation" target="Evapotranspiration.net_radiation"/>
             <OutputLink source="Evapotranspiration.evaporated_from_surface" target="evaporated_from_surface"/>
             <OutputLink source="Evapotranspiration.actual_evapotranspiration" target="actual_evapotranspiration"/>
+            <OutputLink source="Evapotranspiration.reference_evapotranspiration" target="reference_evapotranspiration"/>
+            <OutputLink source="Evapotranspiration.actual_evaporation" target="actual_evaporation"/>
+            <OutputLink source="Evapotranspiration.actual_transpiration" target="actual_transpiration"/>
+            <OutputLink source="Evapotranspiration.surface_water_storage" target="surface_water_storage"/>
+            <OutputLink source="Evapotranspiration.soil_moisture" target="soil_moisture"/>
+            <OutputLink source="Evapotranspiration.vapor_pressure" target="vapor_pressure"/>
+            <OutputLink source="Evapotranspiration.net_radiation" target="net_radiation"/>
         </Links>
     </Composition>
 </ModelComposition>
