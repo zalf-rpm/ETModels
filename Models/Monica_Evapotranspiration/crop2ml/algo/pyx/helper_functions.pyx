@@ -151,7 +151,6 @@ def calc_reference_evapotranspiration(float height_nn,
         else:
             vapor_pressure = relative_humidity * saturated_vapor_pressure
 
-
     # Calculation of the air saturation deficit [kPA]
     cdef float saturation_deficit
     saturation_deficit = saturated_vapor_pressure - vapor_pressure
@@ -210,7 +209,7 @@ def calc_reference_evapotranspiration(float height_nn,
     if reference_evapotranspiration < 0.0:
       reference_evapotranspiration = 0.0
 
-    return reference_evapotranspiration, vapor_pressure, net_radiation
+    return reference_evapotranspiration, net_radiation
 
 
 # Calculation of evaporation reduction by soil moisture content

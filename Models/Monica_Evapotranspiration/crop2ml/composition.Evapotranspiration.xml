@@ -35,7 +35,7 @@
             <InputLink source="latitude" target="Evapotranspiration.latitude"/>
             <InputLink source="evaporated_from_surface" target="Evapotranspiration.evaporated_from_surface"/>
             <InputLink source="surface_water_storage" target="Evapotranspiration.surface_water_storage"/>
-            <InputLink source="snow_depth" target="Evapotranspiration.snow_depth"/>
+            <InputLink source="has_snow_cover" target="Evapotranspiration.has_snow_cover"/>
             <InputLink source="developmental_stage" target="Evapotranspiration.developmental_stage"/>
             <InputLink source="crop_reference_evapotranspiration" target="Evapotranspiration.crop_reference_evapotranspiration"/>
             <InputLink source="reference_evapotranspiration" target="Evapotranspiration.reference_evapotranspiration"/>
@@ -63,7 +63,6 @@
             <OutputLink source="Evapotranspiration.actual_transpiration" target="actual_transpiration"/>
             <OutputLink source="Evapotranspiration.surface_water_storage" target="surface_water_storage"/>
             <OutputLink source="Evapotranspiration.soil_moisture" target="soil_moisture"/>
-            <OutputLink source="Evapotranspiration.vapor_pressure" target="vapor_pressure"/>
             <OutputLink source="Evapotranspiration.net_radiation" target="net_radiation"/>
         </Links>
     </Composition>

@@ -22,36 +22,33 @@ def init_evapotranspiration(float evaporation_zeta,
                             float wind_speed,
                             float wind_speed_height,
                             float global_radiation,
-                            int julian_day):
+                            int julian_day,
+                            float kc_factor,
+                            bool has_snow_cover,
+                            int developmental_stage,
+                            float crop_reference_evapotranspiration,
+                            float crop_transpiration[no_of_soil_moisture_layers],
+                            float crop_remaining_evapotranspiration,
+                            float crop_evaporated_from_intercepted,
+                            float percentage_soil_coverage,
+                            float vapor_pressure):
+    cdef float surface_water_storage = 0.0
     cdef float evaporated_from_surface = 0.0
-    cdef float snow_depth = 0.0
-    cdef int developmental_stage = 0
-    cdef float crop_reference_evapotranspiration = -1.0
     cdef float reference_evapotranspiration = 0.0
     cdef float actual_evaporation = 0.0
     cdef float actual_transpiration = 0.0
-    cdef float surface_water_storage = 0.0
-    cdef float kc_factor = 0.75
-    cdef float percentage_soil_coverage = 0.0
     cdef float soil_moisture[no_of_soil_moisture_layers]
     cdef float evaporation[no_of_soil_moisture_layers]
     cdef float transpiration[no_of_soil_moisture_layers]
-    cdef float crop_transpiration[no_of_soil_moisture_layers]
-    cdef float crop_remaining_evapotranspiration
-    cdef float crop_evaporated_from_intercepted
     cdef float evapotranspiration[no_of_soil_moisture_layers]
     cdef float actual_evapotranspiration = 0.0
-    cdef float vapor_pressure = 0.0
     cdef float net_radiation = 0.0
     soil_moisture = array('f', [0.0]*no_of_soil_moisture_layers)
     evaporation = array('f', [0.0]*no_of_soil_moisture_layers)
     transpiration = array('f', [0.0]*no_of_soil_moisture_layers)
-    crop_transpiration = array('f', [0.0]*no_of_soil_moisture_layers)
-    crop_remaining_evapotranspiration = 0.0
-    crop_evaporated_from_intercepted = 0.0
     evapotranspiration = array('f', [0.0]*no_of_soil_moisture_layers)
 
-    return  evaporated_from_surface, snow_depth, developmental_stage, crop_reference_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, kc_factor, percentage_soil_coverage, soil_moisture, evaporation, transpiration, crop_transpiration, crop_remaining_evapotranspiration, crop_evaporated_from_intercepted, evapotranspiration, actual_evapotranspiration, vapor_pressure, net_radiation
+    return  surface_water_storage, evaporated_from_surface, reference_evapotranspiration, actual_evaporation, actual_transpiration, soil_moisture, evaporation, transpiration, evapotranspiration, actual_evapotranspiration, net_radiation
 
 def model_evapotranspiration(float evaporation_zeta,
                              float maximum_evaporation_impact_depth,
@@ -75,25 +72,25 @@ def model_evapotranspiration(float evaporation_zeta,
                              float wind_speed_height,
                              float global_radiation,
                              int julian_day,
-                             float evaporated_from_surface,
-                             float snow_depth,
+                             float kc_factor,
+                             bool has_snow_cover,
                              int developmental_stage,
                              float crop_reference_evapotranspiration,
-                             float reference_evapotranspiration,
-                             float actual_evaporation,
-                             float actual_transpiration,
-                             float surface_water_storage,
-                             float kc_factor,
-                             float percentage_soil_coverage,
-                             float soil_moisture[no_of_soil_moisture_layers],
-                             float evaporation[no_of_soil_moisture_layers],
-                             float transpiration[no_of_soil_moisture_layers],
                              float crop_transpiration[no_of_soil_moisture_layers],
                              float crop_remaining_evapotranspiration,
                              float crop_evaporated_from_intercepted,
+                             float percentage_soil_coverage,
+                             float vapor_pressure,
+                             float surface_water_storage,
+                             float evaporated_from_surface,
+                             float reference_evapotranspiration,
+                             float actual_evaporation,
+                             float actual_transpiration,
+                             float soil_moisture[no_of_soil_moisture_layers],
+                             float evaporation[no_of_soil_moisture_layers],
+                             float transpiration[no_of_soil_moisture_layers],
                              float evapotranspiration[no_of_soil_moisture_layers],
                              float actual_evapotranspiration,
-                             float vapor_pressure,
                              float net_radiation):
     """
     Model of evapotranspiration
@@ -116,7 +113,7 @@ def model_evapotranspiration(float evaporation_zeta,
     if developmental_stage > 0:
         # Reference evapotranspiration is only grabbed here for consistent output in monica.cpp
         if external_reference_evapotranspiration < 0.0:
-            reference_evapotranspiration = reference_evapotranspiration #monica.cropGrowth()->get_ReferenceEvapotranspiration();
+            reference_evapotranspiration = crop_reference_evapotranspiration #monica.cropGrowth()->get_ReferenceEvapotranspiration();
         else:
             reference_evapotranspiration = external_reference_evapotranspiration
         # Remaining ET from crop module already includes Kc factor and evaporation
@@ -125,7 +122,7 @@ def model_evapotranspiration(float evaporation_zeta,
         evaporated_from_intercept = crop_evaporated_from_intercepted #monica.cropGrowth()->get_EvaporatedFromIntercept();
     else: # if no crop grows ETp is calculated from ET0 * kc
         if external_reference_evapotranspiration < 0.0:
-            reference_evapotranspiration, vapor_pressure, net_radiation = \
+            reference_evapotranspiration, net_radiation = \
                 calc_reference_evapotranspiration(height_nn, max_air_temperature,
                                                   min_air_temperature, relative_humidity,
                                                   mean_air_temperature, wind_speed,
@@ -154,7 +151,7 @@ def model_evapotranspiration(float evaporation_zeta,
             # Water surface evaporates with Kc = 1.1.
             potential_evapotranspiration = potential_evapotranspiration * 1.1 / kc_factor
             # If a snow layer is present no water evaporates from surface water sources
-            if snow_depth > 0.0:
+            if has_snow_cover:
                 evaporated_from_surface = 0.0
             elif surface_water_storage < potential_evapotranspiration:
                 potential_evapotranspiration -= surface_water_storage
@@ -195,7 +192,7 @@ def model_evapotranspiration(float evaporation_zeta,
                         evaporation[i] = (1.0 - percentage_soil_coverage) * eReducer * potential_evapotranspiration
                     elif percentage_soil_coverage >= 1.0:
                         evaporation[i] = 0.0
-                    if snow_depth > 0.0:
+                    if has_snow_cover:
                         evaporation[i] = 0.0
                     # Transpiration is derived from ET0; Soil coverage and Kc factors
                     # already considered in crop part!
@@ -205,7 +202,7 @@ def model_evapotranspiration(float evaporation_zeta,
                     if evaporation_from_surface:
                         transpiration[i] = percentage_soil_coverage * eReducer * potential_evapotranspiration
                 else: # no vegetation present
-                    if snow_depth > 0.0:
+                    if has_snow_cover:
                         evaporation[i] = 0.0
                     else:
                         evaporation[i] = potential_evapotranspiration * eReducer
@@ -218,7 +215,7 @@ def model_evapotranspiration(float evaporation_zeta,
                 actual_transpiration += transpiration[i]
                 actual_evaporation += evaporation[i]
         actual_evapotranspiration = actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
-    return  evaporated_from_surface, actual_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, soil_moisture, vapor_pressure, net_radiation
+    return  evaporated_from_surface, actual_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, soil_moisture, net_radiation
 
 
 
@@ -367,7 +364,6 @@ def calc_reference_evapotranspiration(float height_nn,
         else:
             vapor_pressure = relative_humidity * saturated_vapor_pressure
 
-
     # Calculation of the air saturation deficit [kPA]
     cdef float saturation_deficit
     saturation_deficit = saturated_vapor_pressure - vapor_pressure
@@ -426,7 +422,7 @@ def calc_reference_evapotranspiration(float height_nn,
     if reference_evapotranspiration < 0.0:
       reference_evapotranspiration = 0.0
 
-    return reference_evapotranspiration, vapor_pressure, net_radiation
+    return reference_evapotranspiration, net_radiation
 
 
 # Calculation of evaporation reduction by soil moisture content

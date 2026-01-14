@@ -13,7 +13,7 @@ cdef float evaporated_from_intercept = 0.0
 if developmental_stage > 0:
     # Reference evapotranspiration is only grabbed here for consistent output in monica.cpp
     if external_reference_evapotranspiration < 0.0:
-        reference_evapotranspiration = reference_evapotranspiration #monica.cropGrowth()->get_ReferenceEvapotranspiration();
+        reference_evapotranspiration = crop_reference_evapotranspiration #monica.cropGrowth()->get_ReferenceEvapotranspiration();
     else:
         reference_evapotranspiration = external_reference_evapotranspiration
 
@@ -23,7 +23,7 @@ if developmental_stage > 0:
     evaporated_from_intercept = crop_evaporated_from_intercepted #monica.cropGrowth()->get_EvaporatedFromIntercept();
 else: # if no crop grows ETp is calculated from ET0 * kc
     if external_reference_evapotranspiration < 0.0:
-        reference_evapotranspiration, vapor_pressure, net_radiation = \
+        reference_evapotranspiration, net_radiation = \
             calc_reference_evapotranspiration(height_nn, max_air_temperature,
                                               min_air_temperature, relative_humidity,
                                               mean_air_temperature, wind_speed,
@@ -59,7 +59,7 @@ if potential_evapotranspiration > 0.0:
         potential_evapotranspiration = potential_evapotranspiration * 1.1 / kc_factor
 
         # If a snow layer is present no water evaporates from surface water sources
-        if snow_depth > 0.0:
+        if has_snow_cover:
             evaporated_from_surface = 0.0
         elif surface_water_storage < potential_evapotranspiration:
             potential_evapotranspiration -= surface_water_storage
@@ -106,7 +106,7 @@ if potential_evapotranspiration > 0.0:
                 elif percentage_soil_coverage >= 1.0:
                     evaporation[i] = 0.0
 
-                if snow_depth > 0.0:
+                if has_snow_cover:
                     evaporation[i] = 0.0
 
                 # Transpiration is derived from ET0; Soil coverage and Kc factors
@@ -119,7 +119,7 @@ if potential_evapotranspiration > 0.0:
                     transpiration[i] = percentage_soil_coverage * eReducer * potential_evapotranspiration
 
             else: # no vegetation present
-                if snow_depth > 0.0:
+                if has_snow_cover:
                     evaporation[i] = 0.0
                 else:
                     evaporation[i] = potential_evapotranspiration * eReducer
