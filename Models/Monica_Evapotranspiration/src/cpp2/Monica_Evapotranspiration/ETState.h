@@ -5,11 +5,12 @@
 #include<vector>
 #include<string>
 namespace Monica_Evapotranspiration {
-struct EvapotranspirationCompState
+struct ETState
 {
-    double evaporated_from_surface{0};
+    double net_radiation{0};
+    double potential_evapotranspiration{0};
     double surface_water_storage{0};
-    double reference_evapotranspiration{0};
+    double evaporated_from_surface{0};
     double actual_evaporation{0};
     double actual_transpiration{0};
     std::vector<double> soil_moisture;
@@ -17,6 +18,6 @@ struct EvapotranspirationCompState
     std::vector<double> transpiration;
     std::vector<double> evapotranspiration;
     double actual_evapotranspiration{0};
-    double net_radiation{0};
+    double reference_evapotranspiration{0.0};
 };
 }

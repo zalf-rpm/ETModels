@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ModelUnit PUBLIC " "
         "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
-<ModelUnit modelid="Monica_Evapotranspiration.Evapotranspiration" name="Evapotranspiration" timestep="1"
-           version="1">
+<ModelUnit modelid="Monica_Evapotranspiration.Evapotranspiration"
+           name="Evapotranspiration"
+           timestep="1" version="1">
     <Description>
-        <Title>Model of evapotranspiration</Title>
+        <Title>MONICA evapotranspiration model</Title>
         <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
         <Institution>ZALF e.V.</Institution>
         <URI></URI>
         <Reference></Reference>
         <ExtendedDescription></ExtendedDescription>
-        <ShortDescription>Calculates the evapotranspiration</ShortDescription>
+        <ShortDescription>Calculates the MONICA evapotranspiration</ShortDescription>
     </Description>
     <Inputs>
         <!-- parameters -->
@@ -20,24 +21,12 @@
         <Input name="maximum_evaporation_impact_depth" description="maximumEvaporationImpactDepth"
                inputtype="parameter" parametercategory="constant"
                datatype="DOUBLE" max="" min="0" default="5" unit="dm"/>
-        <Input name="reference_albedo" description="reference albedo"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="1" min="0" default="0" unit="dimensionless"/>
-        <Input name="stomata_resistance" description="stomata resistance"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="10000" min="0" default="100" unit="s/m"/>
         <Input name="evaporation_reduction_method" description="THESEUS (0) or HERMES (1) evaporation reduction method"
                inputtype="parameter" parametercategory="constant"
                datatype="INT" max="1" min="0" default="1" unit="dimensionless"/>
         <Input name="xsa_critical_soil_moisture" description="XSACriticalSoilMoisture"
                inputtype="parameter" parametercategory="constant"
                datatype="DOUBLE" max="1.5" min="0" default="0.1" unit="m3/m3"/>
-        <Input name="latitude" description="latitude"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="90" min="-90" default="0" unit="degree"/>
-        <Input name="height_nn" description="height above sea leavel"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="9999" min="-9999" default="0" unit="m"/>
         <Input name="no_of_soil_layers" description="number of soil layers"
                inputtype="parameter" parametercategory="constant"
                datatype="INT" max="" min="0" default="20" unit="dimensionless"/>
@@ -55,33 +44,6 @@
                datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="m3/m3"/>
 
         <!-- exogenous -->
-        <Input name="external_reference_evapotranspiration" description="externally supplied ET0"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="-1" unit="mm"/>
-        <Input name="max_air_temperature" description="daily maximum air temperature"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
-        <Input name="min_air_temperature" description="daily minimum air temperature"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
-        <Input name="mean_air_temperature" description="daily average air temperature"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
-        <Input name="relative_humidity" description="relative humidity"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="1" min="0" default="0" unit="fraction"/>
-        <Input name="wind_speed" description="wind speed measured at wind speed height"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="9999" min="0" default="0" unit="m/s"/>
-        <Input name="wind_speed_height" description="height at which the wind speed has been measured"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="9999" min="-9999" default="2" unit="m"/>
-        <Input name="global_radiation" description="global radiation"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="50" min="0" default="0" unit="MJ/m2"/>
-        <Input name="julian_day" description="day of year"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="INT" max="366" min="1" default="1" unit="day"/>
         <Input name="kc_factor" description="crop coefficient ETc/ET0"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="0" default="0.75" unit="dimensionless"/>
@@ -91,34 +53,25 @@
         <Input name="developmental_stage" description="MONICA crop developmental stage"
                inputtype="variable" variablecategory="exogenous"
                datatype="INT" max="6" min="0" default="0" unit="dimensionless"/>
-        <Input name="crop_reference_evapotranspiration"
-               description="the crop specific ET0, if no external ET0 and crop is planted"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="-1" unit="mm"/>
         <Input name="crop_transpiration" description="crop transpiration array"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="mm"/>
-        <Input name="crop_remaining_evapotranspiration" description="crop remaining evapotranspiration"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="" default="" unit="mm"/>
         <Input name="crop_evaporated_from_intercepted" description="crop evaporated water from intercepted water"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="" default="" unit="mm"/>
         <Input name="percentage_soil_coverage" description="fraction of soil covered by crop"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="1" min="0" default="0" unit="m2/m2"/>
-        <Input name="vapor_pressure" description="vapor pressure"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="0" unit="kPa"/>
 
         <!-- states -->
+        <Input name="potential_evapotranspiration"
+               description="the potential evapotranspiration"
+               inputtype="variable" variablecategory="state"
+               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="surface_water_storage" description="Simulates a virtual layer that contains the surface water"
                inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="evaporated_from_surface" description="evaporated_from_surface"
-               inputtype="variable" variablecategory="state"
-               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
-        <Input name="reference_evapotranspiration" description="reference evapotranspiration (ET0)"
                inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="actual_evaporation" description="actual evaporation"
@@ -142,9 +95,6 @@
         <Input name="actual_evapotranspiration" description="actual evapotranspiration"
                inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
-        <Input name="net_radiation" description="net radiation"
-               inputtype="variable" variablecategory="state"
-               datatype="DOUBLE" max="" min="0" default="0" unit="MJ/m2"/>
     </Inputs>
     <Outputs>
         <Output name="evaporated_from_surface" description=""
@@ -153,9 +103,6 @@
         <Output name="actual_evapotranspiration" description="actual evapotranspiration"
                 variablecategory="state"
                 datatype="DOUBLE" max="200" min="0" unit="mm"/>
-        <Output name="reference_evapotranspiration" description="reference evapotranspiration (ET0)"
-               variablecategory="state"
-                datatype="DOUBLE" max="" min="0" unit="mm"/>
         <Output name="actual_evaporation" description="actual evaporation"
                 variablecategory="state"
                datatype="DOUBLE" max="" min="0" unit="mm"/>
@@ -168,15 +115,15 @@
         <Output name="soil_moisture" description="soil moisture array"
                 variablecategory="state"
                 datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" unit="m3/m3"/>
-        <Output name="net_radiation" description="net radiation"
-                variablecategory="state"
-                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
     </Outputs>
     <Initialization name="init_evapotranspiration" language="cyml"
                     filename="algo/pyx/init_evapotranspiration.pyx"/>
-    <Function name="helper_functions" description="helper functions for evapotranspiration code"
+    <Function name="bound" description="helper functions for evapotranspiration code"
               language="cyml" type="external"
-              filename="algo/pyx/helper_functions.pyx"/>
+              filename="algo/pyx/helpers/bound.pyx"/>
+    <Function name="ET_functions" description="helper functions for evapotranspiration code"
+              language="cyml" type="external"
+              filename="algo/pyx/helpers/ET_functions.pyx"/>
     <Algorithm language="cyml" platform=""
                filename="algo/pyx/evapotranspiration.pyx"/>
     <Parametersets/>

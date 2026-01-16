@@ -6,7 +6,7 @@
 #include <string>
 
 namespace Monica_Evapotranspiration {
-struct EvapotranspirationCompRate
+struct ETRate
 {
 };
 }
