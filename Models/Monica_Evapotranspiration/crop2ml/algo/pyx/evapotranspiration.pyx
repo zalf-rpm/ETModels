@@ -1,46 +1,12 @@
-evaporated_from_surface = 0.0
-
-#snow_depth = snowComponent->getSnowDepth();
-
-# @todo <b>Claas:</b> pm_MaximumEvaporationImpactDepth is dependent on soil type
-# something has to be done there
-# this is the depth until which the evaporation can penetrate maximally
-# maximum_evaporation_impact_depth = _params.pm_MaximumEvaporationImpactDepth;
-
-cdef float potential_evapotranspiration = 0.0
-cdef float evaporated_from_intercept = 0.0
-# If a crop grows, ETp is taken from crop module
+cdef float evaporated_from_intercept
 if developmental_stage > 0:
-    # Reference evapotranspiration is only grabbed here for consistent output in monica.cpp
-    if external_reference_evapotranspiration < 0.0:
-        reference_evapotranspiration = crop_reference_evapotranspiration #monica.cropGrowth()->get_ReferenceEvapotranspiration();
-    else:
-        reference_evapotranspiration = external_reference_evapotranspiration
+    evaporated_from_intercept = crop_evaporated_from_intercepted
+else:
+    evaporated_from_intercept = 0.0
 
-    # Remaining ET from crop module already includes Kc factor and evaporation
-    # from interception storage
-    potential_evapotranspiration = crop_remaining_evapotranspiration #monica.cropGrowth()->get_RemainingEvapotranspiration();
-    evaporated_from_intercept = crop_evaporated_from_intercepted #monica.cropGrowth()->get_EvaporatedFromIntercept();
-else: # if no crop grows ETp is calculated from ET0 * kc
-    if external_reference_evapotranspiration < 0.0:
-        reference_evapotranspiration, net_radiation = \
-            calc_reference_evapotranspiration(height_nn, max_air_temperature,
-                                              min_air_temperature, relative_humidity,
-                                              mean_air_temperature, wind_speed,
-                                              wind_speed_height,
-                                              global_radiation, julian_day, latitude,
-                                              reference_albedo, vapor_pressure, stomata_resistance)
-    else:
-        reference_evapotranspiration = external_reference_evapotranspiration
-
-    potential_evapotranspiration = reference_evapotranspiration * kc_factor # - vm_InterceptionReference;
-
+evaporated_from_surface = 0.0
 actual_evaporation = 0.0
 actual_transpiration = 0.0
-
-# from HERMES:
-if potential_evapotranspiration > 6.5:
-    potential_evapotranspiration = 6.5
 
 cdef bool evaporation_from_surface = False
 cdef float eRed1

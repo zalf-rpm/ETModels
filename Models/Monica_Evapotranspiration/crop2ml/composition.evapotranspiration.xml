@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelComposition PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelComposition.dtd">
+<ModelComposition id="Monica_Evapotranspiration.ET"
+                  name="ET"
+                  version="1" timestep="1">
+    <Description>
+        <Title>MONICA evapotranspiration model</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <Reference></Reference>
+        <ExtendedDescription></ExtendedDescription>
+        <ShortDescription>Calculates the MONICA evapotranspiration</ShortDescription>
+    </Description>
+    <Composition>
+        <Model id="Monica_Evapotranspiration.Evapotranspiration"
+               name="Evapotranspiration"
+               filename="unit.evapotranspiration.xml"/>
+        <Model id="Monica_Evapotranspiration.ReferenceEvapotranspiration"
+               name="ReferenceEvapotranspiration"
+               filename="unit.reference_evapotranspiration.xml"/>
+        <Model id="Monica_Evapotranspiration.PotentialEvapotranspiration"
+               name="PotentialEvapotranspiration"
+               filename="unit.potential_evapotranspiration.xml"/>
+        <Links>
+            <!-- into ET0 -->
+            <InputLink source="reference_albedo" target="ReferenceEvapotranspiration.reference_albedo"/>
+            <InputLink source="stomata_resistance" target="ReferenceEvapotranspiration.stomata_resistance"/>
+            <InputLink source="latitude" target="ReferenceEvapotranspiration.latitude"/>
+            <InputLink source="height_nn" target="ReferenceEvapotranspiration.height_nn"/>
+            <InputLink source="max_air_temperature" target="ReferenceEvapotranspiration.max_air_temperature"/>
+            <InputLink source="min_air_temperature" target="ReferenceEvapotranspiration.min_air_temperature"/>
+            <InputLink source="mean_air_temperature" target="ReferenceEvapotranspiration.mean_air_temperature"/>
+            <InputLink source="relative_humidity" target="ReferenceEvapotranspiration.relative_humidity"/>
+            <InputLink source="wind_speed" target="ReferenceEvapotranspiration.wind_speed"/>
+            <InputLink source="wind_speed_height" target="ReferenceEvapotranspiration.wind_speed_height"/>
+            <InputLink source="global_radiation" target="ReferenceEvapotranspiration.global_radiation"/>
+            <InputLink source="julian_day" target="ReferenceEvapotranspiration.julian_day"/>
+            <InputLink source="vapor_pressure" target="ReferenceEvapotranspiration.vapor_pressure"/>
+            <InputLink source="net_radiation" target="ReferenceEvapotranspiration.net_radiation"/>
+
+            <!-- into potET -->
+<!--            <InputLink source="reference_evapotranspiration" target="potential_evapotranspiration.reference_evapotranspiration"/>-->
+            <InputLink source="external_reference_evapotranspiration" target="PotentialEvapotranspiration.external_reference_evapotranspiration"/>
+            <InputLink source="kc_factor" target="PotentialEvapotranspiration.kc_factor"/>
+            <InputLink source="developmental_stage" target="PotentialEvapotranspiration.developmental_stage"/>
+            <InputLink source="crop_reference_evapotranspiration" target="PotentialEvapotranspiration.crop_reference_evapotranspiration"/>
+            <InputLink source="crop_remaining_evapotranspiration" target="PotentialEvapotranspiration.crop_remaining_evapotranspiration"/>
+            <InputLink source="potential_evapotranspiration" target="PotentialEvapotranspiration.potential_evapotranspiration"/>
+
+            <!-- into ET -->
+            <InputLink source="evaporation_zeta" target="Evapotranspiration.evaporation_zeta"/>
+            <InputLink source="maximum_evaporation_impact_depth" target="Evapotranspiration.maximum_evaporation_impact_depth"/>
+            <InputLink source="evaporation_reduction_method" target="Evapotranspiration.evaporation_reduction_method"/>
+            <InputLink source="xsa_critical_soil_moisture" target="Evapotranspiration.xsa_critical_soil_moisture"/>
+            <InputLink source="no_of_soil_layers" target="Evapotranspiration.no_of_soil_layers"/>
+            <InputLink source="no_of_soil_moisture_layers" target="Evapotranspiration.no_of_soil_moisture_layers"/>
+            <InputLink source="layer_thickness" target="Evapotranspiration.layer_thickness"/>
+            <InputLink source="permanent_wilting_point" target="Evapotranspiration.permanent_wilting_point"/>
+            <InputLink source="field_capacity" target="Evapotranspiration.field_capacity"/>
+            <InputLink source="kc_factor" target="Evapotranspiration.kc_factor"/>
+            <InputLink source="has_snow_cover" target="Evapotranspiration.has_snow_cover"/>
+            <InputLink source="developmental_stage" target="Evapotranspiration.developmental_stage"/>
+            <InputLink source="crop_transpiration" target="Evapotranspiration.crop_transpiration"/>
+            <InputLink source="crop_evaporated_from_intercepted" target="Evapotranspiration.crop_evaporated_from_intercepted"/>
+            <InputLink source="percentage_soil_coverage" target="Evapotranspiration.percentage_soil_coverage"/>
+            <InputLink source="surface_water_storage" target="Evapotranspiration.surface_water_storage"/>
+            <InputLink source="evaporated_from_surface" target="Evapotranspiration.evaporated_from_surface"/>
+            <InputLink source="actual_evaporation" target="Evapotranspiration.actual_evaporation"/>
+            <InputLink source="actual_transpiration" target="Evapotranspiration.actual_transpiration"/>
+            <InputLink source="soil_moisture" target="Evapotranspiration.soil_moisture"/>
+            <InputLink source="evaporation" target="Evapotranspiration.evaporation"/>
+            <InputLink source="transpiration" target="Evapotranspiration.transpiration"/>
+            <InputLink source="evapotranspiration" target="Evapotranspiration.evapotranspiration"/>
+            <InputLink source="actual_evapotranspiration" target="Evapotranspiration.actual_evapotranspiration"/>
+
+            <!-- ET0 to potET -->
+            <InternalLink source="ReferenceEvapotranspiration.reference_evapotranspiration" target="PotentialEvapotranspiration.reference_evapotranspiration"/>
+
+            <!-- potET to ET -->
+            <InternalLink source="PotentialEvapotranspiration.potential_evapotranspiration" target="Evapotranspiration.potential_evapotranspiration"/>
+
+            <!-- from ET0 -->
+            <OutputLink source="ReferenceEvapotranspiration.net_radiation" target="net_radiation"/>
+
+            <!-- from potET -->
+            <OutputLink source="PotentialEvapotranspiration.potential_evapotranspiration" target="potential_evapotranspiration"/>
+            <OutputLink source="PotentialEvapotranspiration.reference_evapotranspiration" target="reference_evapotranspiration"/>
+
+            <!-- from ET -->
+            <OutputLink source="Evapotranspiration.evaporated_from_surface" target="evaporated_from_surface"/>
+            <OutputLink source="Evapotranspiration.actual_evapotranspiration" target="actual_evapotranspiration"/>
+            <OutputLink source="Evapotranspiration.actual_evaporation" target="actual_evaporation"/>
+            <OutputLink source="Evapotranspiration.actual_transpiration" target="actual_transpiration"/>
+            <OutputLink source="Evapotranspiration.surface_water_storage" target="surface_water_storage"/>
+            <OutputLink source="Evapotranspiration.soil_moisture" target="soil_moisture"/>
+        </Links>
+    </Composition>
+</ModelComposition>

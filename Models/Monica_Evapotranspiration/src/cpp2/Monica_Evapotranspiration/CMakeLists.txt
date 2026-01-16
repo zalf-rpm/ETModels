@@ -74,12 +74,16 @@ find_package(Threads REQUIRED)
 add_library(Monica_Evapotranspiration_lib
 	Evapotranspiration.h
 	Evapotranspiration.cpp
-	EvapotranspirationCompAuxiliary.h
-	EvapotranspirationCompComponent.h
-	EvapotranspirationCompComponent.cpp
-	EvapotranspirationCompExogenous.h
-	EvapotranspirationCompRate.h
-	EvapotranspirationCompState.h
+	PotentialEvapotranspiration.h
+  PotentialEvapotranspiration.cpp
+  ReferenceEvapotranspiration.h
+  ReferenceEvapotranspiration.cpp
+	ETAuxiliary.h
+	ETComponent.h
+	ETComponent.cpp
+	ETExogenous.h
+	ETRate.h
+	ETState.h
 )
 target_link_libraries(Monica_Evapotranspiration_lib
 	PUBLIC

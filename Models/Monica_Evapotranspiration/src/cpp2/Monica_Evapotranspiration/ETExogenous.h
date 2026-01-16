@@ -6,9 +6,8 @@
 #include <string>
 
 namespace Monica_Evapotranspiration {
-struct EvapotranspirationCompExogenous
+struct ETExogenous
 {
-    double external_reference_evapotranspiration{-1};
     double max_air_temperature{0};
     double min_air_temperature{0};
     double mean_air_temperature{0};
@@ -17,14 +16,16 @@ struct EvapotranspirationCompExogenous
     double wind_speed_height{2};
     double global_radiation{0};
     int julian_day{1};
-    bool has_snow_cover{false};
+    double vapor_pressure{0};
+    double external_reference_evapotranspiration{-1};
+    double kc_factor{0.75};
     int developmental_stage{0};
     double crop_reference_evapotranspiration{-1};
-    double kc_factor{0.75};
-    double percentage_soil_coverage{0};
-    std::vector<double> crop_transpiration;
     double crop_remaining_evapotranspiration{0.0};
+    bool has_snow_cover{false};
+    std::vector<double> crop_transpiration;
     double crop_evaporated_from_intercepted{0.0};
-    double vapor_pressure{0};
+    double percentage_soil_coverage{0};
+    double reference_evapotranspiration{0.0};
 };
 }
