@@ -135,5 +135,5 @@ if potential_evapotranspiration > 0.0:
             actual_transpiration += transpiration[i]
             actual_evaporation += evaporation[i]
 
-    actual_evapotranspiration = actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
+actual_evapotranspiration = actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
 

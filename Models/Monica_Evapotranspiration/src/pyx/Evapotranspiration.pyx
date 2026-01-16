@@ -214,7 +214,7 @@ def model_evapotranspiration(float evaporation_zeta,
                     soil_moisture[i] = 0.01
                 actual_transpiration += transpiration[i]
                 actual_evaporation += evaporation[i]
-        actual_evapotranspiration = actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
+    actual_evapotranspiration = actual_transpiration + actual_evaporation + evaporated_from_intercept + evaporated_from_surface
     return  evaporated_from_surface, actual_evapotranspiration, reference_evapotranspiration, actual_evaporation, actual_transpiration, surface_water_storage, soil_moisture, net_radiation
 
 
