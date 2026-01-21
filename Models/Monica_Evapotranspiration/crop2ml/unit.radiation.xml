@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.Radiation"
+           name="Radiation"
+           timestep="1" version="1">
+    <Description>
+        <Title>MONICA radiation calculations</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference>
+            Taken from the original HERMES model, Kersebaum, K.C. and Richter J.
+            (1991): Modelling nitrogen dynamics in a plant-soil system with a
+            simple model for advisory purposes. Fert. Res. 27 (2-3), 273 - 281.
+        </Reference>
+        <ExtendedDescription>
+        </ExtendedDescription>
+        <ShortDescription>Calculates the MONICA reference evapotranspiration</ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- parameters -->
+        <Input name="latitude" description="latitude"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="90" min="-90" default="0" unit="degree"/>
+
+        <!-- exogenous -->
+        <Input name="global_radiation" description="global radiation"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="50" min="0" default="0" unit="MJ/m2"/>
+        <Input name="julian_day" description="day of year"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="INT" max="366" min="1" default="1" unit="day"/>
+        <Input name="sunshine_hours" description="number of sunshine hours"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="24" min="0" default="0" unit="h"/>
+    </Inputs>
+    <Outputs>
+        <Output name="declination" description="declination"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit=""/>
+        <Output name="astronomic_daylength" description="astronomic_daylength"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="effective_daylength" description="effective_daylength"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="photoperiodic_daylength" description="photoperiodic_daylength"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="mm"/>
+        <Output name="global_radiation" description="global_radiation"
+                variablecategory="state"
+                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
+        <Output name="extraterrestrial_radiation" description="extraterrestrial_radiation"
+                variablecategory="state"
+                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
+        <Output name="clear_day_radiation" description="clear_day_radiation"
+                variablecategory="state"
+                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
+        <Output name="overcast_day_radiation" description="overcast_day_radiation"
+                variablecategory="state"
+                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
+        <Output name="phot_act_radiation_mean" description="phot_act_radiation_mean"
+                variablecategory="state"
+                datatype="DOUBLE" max="" min="0" unit="J/m2"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_reference_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_reference_evapotranspiration.pyx"/>-->
+    <Function name="bound" description="helper functions for evapotranspiration code"
+              language="cyml" type="external"
+              filename="algo/pyx/helpers/bound.pyx"/>
+    <Function name="daylengths" description="calculated different daylengths"
+              language="cyml" type="external"
+              filename="algo/pyx/helpers/daylengths.pyx"/>
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/reference_evapotranspiration.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>

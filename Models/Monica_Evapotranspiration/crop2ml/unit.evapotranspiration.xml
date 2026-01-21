@@ -63,11 +63,13 @@
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="1" min="0" default="0" unit="m2/m2"/>
 
-        <!-- states -->
-        <Input name="potential_evapotranspiration"
+        <!-- auxiliary -->
+         <Input name="potential_evapotranspiration"
                description="the potential evapotranspiration"
-               inputtype="variable" variablecategory="state"
+               inputtype="variable" variablecategory="auxiliary"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
+
+        <!-- states -->
         <Input name="surface_water_storage" description="Simulates a virtual layer that contains the surface water"
                inputtype="variable" variablecategory="state"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>

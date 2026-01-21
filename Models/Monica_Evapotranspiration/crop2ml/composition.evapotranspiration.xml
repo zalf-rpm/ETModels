@@ -37,16 +37,16 @@
             <InputLink source="global_radiation" target="ReferenceEvapotranspiration.global_radiation"/>
             <InputLink source="julian_day" target="ReferenceEvapotranspiration.julian_day"/>
             <InputLink source="vapor_pressure" target="ReferenceEvapotranspiration.vapor_pressure"/>
-            <InputLink source="net_radiation" target="ReferenceEvapotranspiration.net_radiation"/>
+            <InputLink source="atmospheric_co2_concentration" target="ReferenceEvapotranspiration.atmospheric_co2_concentration"/>
+            <InputLink source="carboxylation_pathway" target="ReferenceEvapotranspiration.carboxylation_pathway"/>
+            <InputLink source="gross_photosynthesis_reference_mol" target="ReferenceEvapotranspiration.gross_photosynthesis_reference_mol"/>
 
             <!-- into potET -->
-<!--            <InputLink source="reference_evapotranspiration" target="potential_evapotranspiration.reference_evapotranspiration"/>-->
             <InputLink source="external_reference_evapotranspiration" target="PotentialEvapotranspiration.external_reference_evapotranspiration"/>
             <InputLink source="kc_factor" target="PotentialEvapotranspiration.kc_factor"/>
             <InputLink source="developmental_stage" target="PotentialEvapotranspiration.developmental_stage"/>
             <InputLink source="crop_reference_evapotranspiration" target="PotentialEvapotranspiration.crop_reference_evapotranspiration"/>
             <InputLink source="crop_remaining_evapotranspiration" target="PotentialEvapotranspiration.crop_remaining_evapotranspiration"/>
-            <InputLink source="potential_evapotranspiration" target="PotentialEvapotranspiration.potential_evapotranspiration"/>
 
             <!-- into ET -->
             <InputLink source="evaporation_zeta" target="Evapotranspiration.evaporation_zeta"/>

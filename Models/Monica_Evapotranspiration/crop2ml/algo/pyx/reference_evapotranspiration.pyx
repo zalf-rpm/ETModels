@@ -3,11 +3,11 @@ declination = -23.4 * cos(2.0 * pi * ((julian_day + 10.0) / 365.0))
 
 # old SINLD
 cdef float declination_sinus
-declination_sinus = sin(declination * pi / 180.0) * sin(latitude * pi / 180.0);
+declination_sinus = sin(declination * pi / 180.0) * sin(latitude * pi / 180.0)
 
 # old COSLD
 cdef float declination_cosinus
-declination_cosinus = cos(declination * pi / 180.0) * cos(latitude * pi / 180.0);
+declination_cosinus = cos(declination * pi / 180.0) * cos(latitude * pi / 180.0)
 
 cdef float arg_astro_day_length
 arg_astro_day_length = declination_sinus / declination_cosinus
@@ -91,8 +91,7 @@ saturation_deficit = saturated_vapor_pressure - vapor_pressure
 # Slope of saturation water vapor pressure-to-temperature relation [kPA °C-1]
 cdef float saturated_vapour_pressure_slope
 saturated_vapour_pressure_slope = (4098.0 * (0.6108 * exp((17.27 * mean_air_temperature) / (
-        mean_air_temperature
-        + 237.3)))) / ((mean_air_temperature + 237.3) * (mean_air_temperature + 237.3))
+        mean_air_temperature + 237.3)))) / ((mean_air_temperature + 237.3) * (mean_air_temperature + 237.3))
 
 # Calculation of wind speed in 2m height //[m s-1]
 cdef float wind_speed_2m
@@ -100,11 +99,22 @@ wind_speed_2m = max(0.5, wind_speed * (4.87 / (log(67.8 * wind_speed_height - 5.
 # 0.5 minimum allowed wind speed for Penman-Monteith-Method FAO
 
 # Calculation of the aerodynamic resistance [s m-1]
-#cdef float aerodynamic_resistance
-#aerodynamic_resistance = 208.0 / wind_speed_2m
+cdef float aerodynamic_resistance
+aerodynamic_resistance = 208.0 / wind_speed_2m
 
-# FAO default value [s m-1]
-# stomata_resistance = 100
+if carboxylation_pathway > 0:
+    if gross_photosynthesis_reference_mol <= 0.0:
+      stomata_resistance = 999999.9 # [s m-1]
+    elif carboxylation_pathway == 1:
+      # [s m-1]
+      stomata_resistance = (
+              (atmospheric_co2_concentration * (1.0 + saturation_deficit / saturation_beta))
+              / (stomata_conductance_alpha * gross_photosynthesis_reference_mol))
+    else:
+      # [s m-1]
+      stomata_resistance = (
+              (atmospheric_co2_concentration * (1.0 + saturation_deficit / saturation_beta))
+              / (stomata_conductance_alpha * gross_photosynthesis_reference_mol))
 
 cdef float surface_resistance
 surface_resistance = stomata_resistance / 1.44 # [s m - 1]
@@ -135,7 +145,8 @@ reference_evapotranspiration = ((0.408 * saturated_vapour_pressure_slope * net_r
                                        + (psycrometer_constant * (900.0 / (mean_air_temperature + 273.0))
                                           * wind_speed_2m * saturation_deficit)) \
                                           / (saturated_vapour_pressure_slope + psycrometer_constant
-                                             * (1.0 + (surface_resistance / 208.0) * wind_speed_2m))
+                                             #* (1.0 + (surface_resistance / 208.0) * wind_speed_2m))
+                                             * (1.0 + surface_resistance / aerodynamic_resistance))
 
 if reference_evapotranspiration < 0.0:
   reference_evapotranspiration = 0.0

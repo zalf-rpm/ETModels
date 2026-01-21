@@ -15,9 +15,6 @@
     </Description>
     <Inputs>
         <!-- exogenous -->
-        <Input name="reference_evapotranspiration" description="ET0"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
         <Input name="external_reference_evapotranspiration" description="externally supplied ET0"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="0" default="-1" unit="mm"/>
@@ -35,23 +32,25 @@
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="" default="" unit="mm"/>
 
-        <!-- states -->
-        <Input name="potential_evapotranspiration"
-               description="the potential evapotranspiration"
-               inputtype="variable" variablecategory="state"
+        <!-- auxiliary -->
+        <Input name="reference_evapotranspiration" description="ET0"
+               inputtype="variable" variablecategory="auxiliary"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
+
+        <!-- states -->
     </Inputs>
     <Outputs>
         <Output name="potential_evapotranspiration"
                 description="the potential evapotranspiration"
-                variablecategory="state"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="mm"/>
         <Output name="reference_evapotranspiration" description="ET0"
-                variablecategory="exogenous"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="mm"/>
     </Outputs>
-    <Initialization name="init_potential_evapotranspiration" language="cyml"
-                    filename="algo/pyx/init_potential_evapotranspiration.pyx"/>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_potential_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_potential_evapotranspiration.pyx"/>-->
     <Algorithm language="cyml" platform=""
                filename="algo/pyx/potential_evapotranspiration.pyx"/>
     <Parametersets/>
