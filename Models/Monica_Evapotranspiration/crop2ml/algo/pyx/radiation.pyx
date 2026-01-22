@@ -32,10 +32,8 @@ sunset_solar_angle = acos(solar_angle)
 cdef float extraterrestrial_radiation # [MJ m - 2]
 extraterrestrial_radiation = SC * (sunset_solar_angle * decl_sin + decl_cos * sin(sunset_solar_angle))
 
-
-if global_radiation <= 0.0 and astronomic_daylength > 0:
-    global_radiation = extraterrestrial_radiation * (0.19 + 0.55 * sunshine_hours / astronomic_daylength)
-else:
-    global_radiation = 0
-
-
+if sunshine_hours > 0:
+    if global_radiation <= 0.0 and astronomic_daylength > 0:
+        sunshine_hours_global_radiation = extraterrestrial_radiation * (0.19 + 0.55 * sunshine_hours / astronomic_daylength)
+    else:
+        sunshine_hours_global_radiation = 0

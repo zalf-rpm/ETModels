@@ -34,6 +34,8 @@
         <Input name="sunshine_hours" description="number of sunshine hours"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="24" min="0" default="0" unit="h"/>
+
+        <!-- auxiliary -->
     </Inputs>
     <Outputs>
         <Output name="declination" description="declination"
@@ -48,20 +50,20 @@
         <Output name="photoperiodic_daylength" description="photoperiodic_daylength"
                 variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="mm"/>
-        <Output name="global_radiation" description="global_radiation"
-                variablecategory="state"
+        <Output name="sunshine_hours_global_radiation" description="global radiation calculated from sunshine hours"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
         <Output name="extraterrestrial_radiation" description="extraterrestrial_radiation"
-                variablecategory="state"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
         <Output name="clear_day_radiation" description="clear_day_radiation"
-                variablecategory="state"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
         <Output name="overcast_day_radiation" description="overcast_day_radiation"
-                variablecategory="state"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
         <Output name="phot_act_radiation_mean" description="phot_act_radiation_mean"
-                variablecategory="state"
+                variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="J/m2"/>
     </Outputs>
     <!-- if there is no state, there is no need for an initialization function -->
@@ -74,7 +76,7 @@
               language="cyml" type="external"
               filename="algo/pyx/helpers/daylengths.pyx"/>
     <Algorithm language="cyml" platform=""
-               filename="algo/pyx/reference_evapotranspiration.pyx"/>
+               filename="algo/pyx/radiation.pyx"/>
     <Parametersets/>
     <Testsets/>
 </ModelUnit>

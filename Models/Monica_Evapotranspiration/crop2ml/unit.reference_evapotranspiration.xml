@@ -23,66 +23,31 @@
     </Description>
     <Inputs>
         <!-- parameters -->
-        <Input name="reference_albedo" description="reference albedo"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="1" min="0" default="0" unit="dimensionless"/>
-        <Input name="stomata_resistance" description="stomata resistance (FAO default value is 100)"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="10000" min="0" default="100" unit="s/m"/>
-        <Input name="saturation_beta" description="Original: Yu et al. 2001; beta = 3.5"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="" min="" default="2.5" unit=""/>
-        <Input name="stomata_conductance_alpha" description="Original: Yu et al. 2001; alpha = 0.06 mol/m2/s"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="" min="" default="40" unit="mmol/m2/s"/>
-        <Input name="latitude" description="latitude"
-               inputtype="parameter" parametercategory="constant"
-               datatype="DOUBLE" max="90" min="-90" default="0" unit="degree"/>
         <Input name="height_nn" description="height above sea level"
                inputtype="parameter" parametercategory="constant"
                datatype="DOUBLE" max="9999" min="-9999" default="0" unit="m"/>
-        <Input name="carboxylation_pathway" description="Is it a C3 (=1) or C4 (=2) crop. (0 = no crop)"
-               inputtype="parameter" parametercategory="constant"
-               datatype="INT" max="2" min="0" default="0" unit="dimensionless"/>
 
         <!-- exogenous -->
-        <Input name="max_air_temperature" description="daily maximum air temperature"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
-        <Input name="min_air_temperature" description="daily minimum air temperature"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
         <Input name="mean_air_temperature" description="daily average air temperature"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
-        <Input name="relative_humidity" description="relative humidity"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="1" min="0" default="0" unit="fraction"/>
         <Input name="wind_speed" description="wind speed measured at wind speed height"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="9999" min="0" default="0" unit="m/s"/>
         <Input name="wind_speed_height" description="height at which the wind speed has been measured"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="9999" min="-9999" default="2" unit="m"/>
-        <Input name="global_radiation" description="global radiation"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="50" min="0" default="0" unit="MJ/m2"/>
-        <Input name="julian_day" description="day of year"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="INT" max="366" min="1" default="1" unit="day"/>
-        <Input name="vapor_pressure" description="vapor pressure"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="0" unit="kPa"/>
-        <Input name="atmospheric_co2_concentration"
-               description="CO2 concentration in the atmosphere. Optional if no crop."
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="430" unit="ppm"/>
 
         <!-- auxiliary -->
-        <Input name="gross_photosynthesis_reference_mol"
-               description="gross_photosynthesis_reference_mol (-1 = not supplied = no crop)"
+        <Input name="net_radiation" description="net radiation"
+                inputtype="variable" variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
+        <Input name="stomata_resistance" description="stomata resistance (FAO default value is 100)"
                inputtype="variable" variablecategory="auxiliary"
-               datatype="DOUBLE" max="" min="0" default="-1" unit="[mol m-2 s-1] or [cm3 cm-2 s-1]"/>
+               datatype="DOUBLE" max="10000" min="0" default="100" unit="s/m"/>
+        <Input name="saturation_vapor_pressure_deficit" description="saturation_vapor_pressure_deficit"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" default="0" unit="kPa"/>
 
         <!-- states -->
     </Inputs>
@@ -90,16 +55,13 @@
         <Output name="reference_evapotranspiration" description="reference evapotranspiration (ET0)"
                 variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="mm"/>
-        <Output name="net_radiation" description="net radiation"
-                variablecategory="state"
-                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
     </Outputs>
     <!-- if there is no state, there is no need for an initialization function -->
 <!--    <Initialization name="init_reference_evapotranspiration" language="cyml"-->
 <!--                    filename="algo/pyx/init_reference_evapotranspiration.pyx"/>-->
-    <Function name="bound" description="helper functions for evapotranspiration code"
-              language="cyml" type="external"
-              filename="algo/pyx/helpers/bound.pyx"/>
+<!--    <Function name="bound" description="helper functions for evapotranspiration code"-->
+<!--              language="cyml" type="external"-->
+<!--              filename="algo/pyx/helpers/bound.pyx"/>-->
     <Algorithm language="cyml" platform=""
                filename="algo/pyx/reference_evapotranspiration.pyx"/>
     <Parametersets/>

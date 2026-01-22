@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.StomataResistance"
+           name="StomataResistance"
+           timestep="1" version="1">
+    <Description>
+        <Title>MONICA stomata resistance</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference>
+        </Reference>
+        <ExtendedDescription>
+        </ExtendedDescription>
+        <ShortDescription>Calculates the MONICA reference evapotranspiration</ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- parameters -->
+        <Input name="saturation_beta" description="Original: Yu et al. 2001; beta = 3.5"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="" min="" default="2.5" unit=""/>
+        <Input name="stomata_conductance_alpha" description="Original: Yu et al. 2001; alpha = 0.06 mol/m2/s"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="" min="" default="40" unit="mmol/m2/s"/>
+        <Input name="carboxylation_pathway" description="Is it a C3 (=1) or C4 (=2) crop. (0 = no crop)"
+               inputtype="parameter" parametercategory="constant"
+               datatype="INT" max="2" min="0" default="0" unit="dimensionless"/>
+
+        <!-- exogenous -->
+        <Input name="atmospheric_co2_concentration"
+               description="CO2 concentration in the atmosphere. Optional if no crop."
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="" min="0" default="430" unit="ppm"/>
+
+        <!-- auxiliary -->
+        <Input name="saturation_vapor_pressure_deficit" description="saturation_vapor_pressure_deficit"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" unit="kPa"/>
+        <Input name="gross_photosynthesis_reference_mol"
+               description="gross_photosynthesis_reference_mol (-1 = not supplied = no crop)"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" default="-1" unit="[mol m-2 s-1] or [cm3 cm-2 s-1]"/>
+
+        <!-- states -->
+    </Inputs>
+    <Outputs>
+        <Output name="stomata_resistance" description="stomata resistance (FAO default value is 100)"
+               variablecategory="auxiliary"
+               datatype="DOUBLE" max="10000" min="0" unit="s/m"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_reference_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_reference_evapotranspiration.pyx"/>-->
+<!--    <Function name="bound" description="helper functions for evapotranspiration code"-->
+<!--              language="cyml" type="external"-->
+<!--              filename="algo/pyx/helpers/bound.pyx"/>-->
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/stomata_resistance.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>

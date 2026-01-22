@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelComposition PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelComposition.dtd">
+<ModelComposition id="Monica_Evapotranspiration.PotET"
+                  name="PotET"
+                  version="1" timestep="1">
+    <Description>
+        <Title>MONICA evapotranspiration model</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <Reference></Reference>
+        <ExtendedDescription></ExtendedDescription>
+        <ShortDescription>Calculates the MONICA evapotranspiration</ShortDescription>
+    </Description>
+    <Composition>
+        <Model id="Monica_Evapotranspiration.Radiation"
+               name="Radiation"
+               filename="unit.net_radiation.xml"/>
+        <Model id="Monica_Evapotranspiration.NetRadiation"
+               name="NetRadiation"
+               filename="unit.net_radiation.xml"/>
+        <Model id="Monica_Evapotranspiration.StomataResistance"
+               name="StomataResistance"
+               filename="unit.stomata_resistance.xml"/>
+        <Model id="Monica_Evapotranspiration.SaturatedVaporPressure"
+               name="SaturatedVaporPressure"
+               filename="unit.saturated_vapor_pressure.xml"/>
+        <Model id="Monica_Evapotranspiration.SaturationVaporPressureDeficit"
+               name="SaturationVaporPressureDeficit"
+               filename="unit.saturation_vapor_pressure_deficit.xml"/>
+        <Model id="Monica_Evapotranspiration.ReferenceEvapotranspiration"
+               name="ReferenceEvapotranspiration"
+               filename="unit.reference_evapotranspiration.xml"/>
+        <Model id="Monica_Evapotranspiration.PotentialEvapotranspiration"
+               name="PotentialEvapotranspiration"
+               filename="unit.potential_evapotranspiration.xml"/>
+        <Links>
+            <!-- into Radiation -->
+            <InputLink source="latitude" target="Radiation.latitude"/>
+            <InputLink source="global_radiation" target="Radiation.global_radiation"/>
+            <InputLink source="julian_day" target="Radiation.julian_day"/>
+            <InputLink source="sunshine_hours" target="Radiation.sunshine_hours"/>
+
+            <!-- into NetRadiation -->
+            <InputLink source="reference_albedo" target="NetRadiation.reference_albedo"/>
+            <InputLink source="height_nn" target="NetRadiation.height_nn"/>
+            <InputLink source="max_air_temperature" target="NetRadiation.max_air_temperature"/>
+            <InputLink source="min_air_temperature" target="NetRadiation.min_air_temperature"/>
+            <InputLink source="global_radiation" target="NetRadiation.global_radiation"/>
+            <InputLink source="vapor_pressure" target="NetRadiation.vapor_pressure"/>
+
+            <!-- into SaturatedVaporPressure -->
+            <InputLink source="max_air_temperature" target="SaturatedVaporPressure.max_air_temperature"/>
+            <InputLink source="min_air_temperature" target="SaturatedVaporPressure.min_air_temperature"/>
+            <InputLink source="relative_humidity" target="SaturatedVaporPressure.relative_humidity"/>
+
+            <!-- into SaturationVaporPressureDeficit -->
+            <InputLink source="vapor_pressure" target="SaturationVaporPressureDeficit.vapor_pressure"/>
+
+            <!-- into StomataResistance -->
+            <InputLink source="saturation_beta" target="StomataResistance.saturation_beta"/>
+            <InputLink source="stomata_conductance_alpha" target="StomataResistance.stomata_conductance_alpha"/>
+            <InputLink source="carboxylation_pathway" target="StomataResistance.carboxylation_pathway"/>
+            <InputLink source="gross_photosynthesis_reference_mol" target="StomataResistance.gross_photosynthesis_reference_mol"/>
+            <InputLink source="atmospheric_co2_concentration" target="StomataResistance.atmospheric_co2_concentration"/>
+
+            <!-- into ReferenceEvapotranspiration -->
+            <InputLink source="height_nn" target="ReferenceEvapotranspiration.height_nn"/>
+            <InputLink source="mean_air_temperature" target="ReferenceEvapotranspiration.mean_air_temperature"/>
+            <InputLink source="wind_speed" target="ReferenceEvapotranspiration.wind_speed"/>
+            <InputLink source="wind_speed_height" target="ReferenceEvapotranspiration.wind_speed_height"/>
+            <InputLink source="stomata_resistance" target="ReferenceEvapotranspiration.stomata_resistance"/>
+            <InputLink source="net_radiation" target="ReferenceEvapotranspiration.net_radiation"/>
+
+            <!-- into PotentialEvapotranspiration -->
+<!--            <InputLink source="external_reference_evapotranspiration" target="PotentialEvapotranspiration.external_reference_evapotranspiration"/>-->
+            <InputLink source="kc_factor" target="PotentialEvapotranspiration.kc_factor"/>
+            <InputLink source="developmental_stage" target="PotentialEvapotranspiration.developmental_stage"/>
+            <InputLink source="crop_reference_evapotranspiration" target="PotentialEvapotranspiration.crop_reference_evapotranspiration"/>
+            <InputLink source="crop_remaining_evapotranspiration" target="PotentialEvapotranspiration.crop_remaining_evapotranspiration"/>
+
+            <!-- Radiation to NetRadiation -->
+            <InternalLink source="Radiation.extraterrestrial_radiation"
+                          target="NetRadiation.extraterrestrial_radiation"/>
+
+            <!-- SaturatedVaporPressure to SaturationVaporPressureDeficit -->
+            <InternalLink source="SaturatedVaporPressure.saturation_vapor_pressure_deficit"
+                          target="SaturationVaporPressureDeficit.saturation_vapor_pressure_deficit"/>
+
+            <!-- SaturationVaporPressureDeficit to StomataResistance -->
+            <InternalLink source="SaturationVaporPressureDeficit.saturation_vapor_pressure_deficit"
+                          target="StomataResistance.saturation_vapor_pressure_deficit"/>
+
+            <!-- StomataResistance to ReferenceEvapotranspiration -->
+            <InternalLink source="StomataResistance.stomata_resistance"
+                          target="ReferenceEvapotranspiration.stomata_resistance"/>
+
+            <!-- ReferenceEvapotranspiration to PotentialEvapotranspiration -->
+            <InternalLink source="ReferenceEvapotranspiration.reference_evapotranspiration"
+                          target="PotentialEvapotranspiration.reference_evapotranspiration"/>
+
+            <!-- from ReferenceEvapotranspiration -->
+            <OutputLink source="ReferenceEvapotranspiration.net_radiation" target="net_radiation"/>
+
+            <!-- from PotentialEvapotranspiration -->
+            <OutputLink source="PotentialEvapotranspiration.potential_evapotranspiration" target="potential_evapotranspiration"/>
+<!--            <OutputLink source="PotentialEvapotranspiration.reference_evapotranspiration" target="reference_evapotranspiration"/>-->
+        </Links>
+    </Composition>
+</ModelComposition>

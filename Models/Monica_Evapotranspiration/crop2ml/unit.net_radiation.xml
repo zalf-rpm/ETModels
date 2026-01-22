@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.NetRadiation"
+           name="NetRadiation"
+           timestep="1" version="1">
+    <Description>
+        <Title>MONICA net radiation calculation</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference>
+        </Reference>
+        <ExtendedDescription>
+        </ExtendedDescription>
+        <ShortDescription></ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- parameters -->
+        <Input name="height_nn" description="height above sea level"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="9999" min="-9999" default="0" unit="m"/>
+        <Input name="reference_albedo" description="reference albedo"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="1" min="0" default="0" unit="dimensionless"/>
+
+        <!-- exogenous -->
+        <Input name="global_radiation" description="global radiation"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="50" min="0" default="0" unit="MJ/m2"/>
+        <Input name="max_air_temperature" description="daily maximum air temperature"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
+        <Input name="min_air_temperature" description="daily minimum air temperature"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
+        <Input name="vapor_pressure" description="vapor pressure"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="" min="0" default="0" unit="kPa"/>
+
+        <!-- auxiliary -->
+        <Input name="extraterrestrial_radiation" description="extraterrestrial_radiation"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="50" min="0" default="0" unit="MJ/m2"/>
+    </Inputs>
+    <Outputs>
+        <Output name="net_radiation" description="net_radiation"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="MJ/m2"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_reference_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_reference_evapotranspiration.pyx"/>-->
+<!--    <Function name="bound" description="helper functions for evapotranspiration code"-->
+<!--              language="cyml" type="external"-->
+<!--              filename="algo/pyx/helpers/bound.pyx"/>-->
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/net_radiation.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>

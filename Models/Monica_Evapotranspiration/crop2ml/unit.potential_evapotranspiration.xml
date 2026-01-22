@@ -14,26 +14,24 @@
         <ShortDescription>Calculates the MONICA potential evapotranspiration</ShortDescription>
     </Description>
     <Inputs>
+        <!-- parameters -->
+        <Input name="potential_evapotranspiration_cap" description="cap ET0 to this value"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="" min="0" default="6.5" unit="mm"/>
+
         <!-- exogenous -->
-        <Input name="external_reference_evapotranspiration" description="externally supplied ET0"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="-1" unit="mm"/>
         <Input name="kc_factor" description="crop coefficient ETc/ET0"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="0" default="0.75" unit="dimensionless"/>
         <Input name="developmental_stage" description="MONICA crop developmental stage"
                inputtype="variable" variablecategory="exogenous"
                datatype="INT" max="6" min="0" default="0" unit="dimensionless"/>
-        <Input name="crop_reference_evapotranspiration"
-               description="the crop specific ET0, if no external ET0 and crop is planted"
-               inputtype="variable" variablecategory="exogenous"
-               datatype="DOUBLE" max="" min="0" default="-1" unit="mm"/>
         <Input name="crop_remaining_evapotranspiration" description="crop remaining evapotranspiration"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="" default="" unit="mm"/>
 
         <!-- auxiliary -->
-        <Input name="reference_evapotranspiration" description="ET0"
+        <Input name="reference_evapotranspiration" description="ET0 either from external ET0 or crop specific ET0"
                inputtype="variable" variablecategory="auxiliary"
                datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
 
@@ -42,9 +40,6 @@
     <Outputs>
         <Output name="potential_evapotranspiration"
                 description="the potential evapotranspiration"
-                variablecategory="auxiliary"
-                datatype="DOUBLE" max="" min="0" unit="mm"/>
-        <Output name="reference_evapotranspiration" description="ET0"
                 variablecategory="auxiliary"
                 datatype="DOUBLE" max="" min="0" unit="mm"/>
     </Outputs>

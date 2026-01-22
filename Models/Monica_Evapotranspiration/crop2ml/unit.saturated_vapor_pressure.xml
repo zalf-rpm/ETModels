@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.SaturatedVaporPressure"
+           name="SaturatedVaporPressure"
+           timestep="1" version="1">
+    <Description>
+        <Title>MONICA saturated vapor pressure</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference>
+        </Reference>
+        <ExtendedDescription>
+        </ExtendedDescription>
+        <ShortDescription>Calculates saturated vapor pressure as in the MONICA model</ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- exogenous -->
+        <Input name="max_air_temperature" description="daily maximum air temperature"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
+        <Input name="min_air_temperature" description="daily minimum air temperature"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="100" min="-100" default="0" unit="°C"/>
+        <Input name="relative_humidity" description="relative humidity"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="1" min="0" default="0" unit="fraction"/>
+    </Inputs>
+    <Outputs>
+        <Output name="saturated_vapor_pressure" description="saturated vapor pressure"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="kPa"/>
+        <Output name="vapor_pressure" description="vapor pressure from relative humidity and saturated vapor pressure"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="kPa"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_reference_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_reference_evapotranspiration.pyx"/>-->
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/saturated_vapor_pressure.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>
