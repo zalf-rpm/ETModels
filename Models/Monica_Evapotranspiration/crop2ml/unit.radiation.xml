@@ -34,8 +34,6 @@
         <Input name="sunshine_hours" description="number of sunshine hours"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="24" min="0" default="0" unit="h"/>
-
-        <!-- auxiliary -->
     </Inputs>
     <Outputs>
         <Output name="declination" description="declination"

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.SaturationVaporPressureDeficit"
+           name="SaturationVaporPressureDeficit"
+           timestep="1" version="1">
+    <Description>
+        <Title>MONICA saturation vapor pressure deficit</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference>
+        </Reference>
+        <ExtendedDescription>
+        </ExtendedDescription>
+        <ShortDescription>Calculates saturation vapor pressure deficit as in the MONICA model</ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- exogenous -->
+        <Input name="vapor_pressure" description="vapor pressure"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="" min="0" default="0" unit="kPa"/>
+
+        <!-- auxiliary -->
+        <Input name="saturated_vapor_pressure" description="saturated vapor pressure"
+                inputtype="variable" variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="kPa"/>
+    </Inputs>
+    <Outputs>
+        <Output name="saturation_vapor_pressure_deficit" description="saturation vapor pressure deficit"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="kPa"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_reference_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_reference_evapotranspiration.pyx"/>-->
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/saturation_vapor_pressure_deficit.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>

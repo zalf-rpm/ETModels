@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.PotentialEvapotranspiration"
+           name="PotentialEvapotranspiration"
+           timestep="1" version="1">
+    <Description>
+        <Title>MONICA potential evapotranspiration calculation</Title>
+        <Authors>Claas Nendel (transcription into Crop2ML by Michael Berg-Mohnicke)</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference></Reference>
+        <ExtendedDescription></ExtendedDescription>
+        <ShortDescription>Calculates the MONICA potential evapotranspiration</ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- parameters -->
+        <Input name="potential_evapotranspiration_cap" description="cap ET0 to this value"
+               inputtype="parameter" parametercategory="constant"
+               datatype="DOUBLE" max="" min="0" default="6.5" unit="mm"/>
+
+        <!-- exogenous -->
+        <Input name="kc_factor" description="crop coefficient ETc/ET0"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="" min="0" default="0.75" unit="dimensionless"/>
+        <Input name="developmental_stage" description="MONICA crop developmental stage"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="INT" max="6" min="0" default="0" unit="dimensionless"/>
+        <Input name="crop_remaining_evapotranspiration" description="crop remaining evapotranspiration"
+               inputtype="variable" variablecategory="exogenous"
+               datatype="DOUBLE" max="" min="" default="" unit="mm"/>
+
+        <!-- auxiliary -->
+        <Input name="reference_evapotranspiration" description="ET0 either from external ET0 or crop specific ET0"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
+
+        <!-- states -->
+    </Inputs>
+    <Outputs>
+        <Output name="potential_evapotranspiration"
+                description="the potential evapotranspiration"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="mm"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_potential_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_potential_evapotranspiration.pyx"/>-->
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/potential_evapotranspiration.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>

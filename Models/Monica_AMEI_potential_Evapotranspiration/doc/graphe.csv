@@ -1,0 +1,3 @@
+Source,Target,Weight
+SaturationVaporPressureDeficit,ReferenceEvapotranspiration,1
+ReferenceEvapotranspiration,PotentialEvapotranspiration,1

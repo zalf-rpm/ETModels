@@ -72,18 +72,28 @@ find_package(Threads REQUIRED)
 
 # create Monica_Evapotranspiration_lib
 add_library(Monica_Evapotranspiration_lib
-	Evapotranspiration.h
-	Evapotranspiration.cpp
-	PotentialEvapotranspiration.h
-  PotentialEvapotranspiration.cpp
-  ReferenceEvapotranspiration.h
-  ReferenceEvapotranspiration.cpp
 	ETAuxiliary.h
 	ETComponent.h
 	ETComponent.cpp
 	ETExogenous.h
 	ETRate.h
 	ETState.h
+	Evapotranspiration.h
+	Evapotranspiration.cpp
+	NetRadiation.h
+	NetRadiation.cpp
+	PotentialEvapotranspiration.h
+  	PotentialEvapotranspiration.cpp
+  	Radiation.h
+  	Radiation.cpp
+  	ReferenceEvapotranspiration.h
+  	ReferenceEvapotranspiration.cpp
+  	SaturatedVaporPressure.h
+  	SaturatedVaporPressure.cpp
+	SaturationVaporPressureDeficit.h
+	SaturationVaporPressureDeficit.cpp
+    StomataResistance.h
+    StomataResistance.cpp
 )
 target_link_libraries(Monica_Evapotranspiration_lib
 	PUBLIC

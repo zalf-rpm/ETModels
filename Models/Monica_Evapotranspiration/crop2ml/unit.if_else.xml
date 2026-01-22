@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ModelUnit PUBLIC " "
+        "https://raw.githubusercontent.com/AgriculturalModelExchangeInitiative/crop2ml/master/ModelUnit.dtd">
+<ModelUnit modelid="Monica_Evapotranspiration.IfElse"
+           name="IfElse"
+           timestep="1" version="1">
+    <Description>
+        <Title>If Else unit </Title>
+        <Authors>Michael Berg-Mohnicke</Authors>
+        <Institution>ZALF e.V.</Institution>
+        <URI></URI>
+        <Reference></Reference>
+        <ExtendedDescription></ExtendedDescription>
+        <ShortDescription>switches between two input values </ShortDescription>
+    </Description>
+    <Inputs>
+        <!-- auxiliary -->
+        <Input name="condition" description="boolean condition to be met"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
+        <Input name="true_branch" description="value to be returned if condition is true"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
+        <Input name="false_branch" description="value to be returned if condition is false"
+               inputtype="variable" variablecategory="auxiliary"
+               datatype="DOUBLE" max="" min="0" default="0" unit="mm"/>
+    </Inputs>
+    <Outputs>
+        <Output name="output" description="the output value"
+                variablecategory="auxiliary"
+                datatype="DOUBLE" max="" min="0" unit="mm"/>
+    </Outputs>
+    <!-- if there is no state, there is no need for an initialization function -->
+<!--    <Initialization name="init_potential_evapotranspiration" language="cyml"-->
+<!--                    filename="algo/pyx/init_potential_evapotranspiration.pyx"/>-->
+    <Algorithm language="cyml" platform=""
+               filename="algo/pyx/if_else.pyx"/>
+    <Parametersets/>
+    <Testsets/>
+</ModelUnit>

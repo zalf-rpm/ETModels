@@ -1,6 +1,6 @@
 from math import *
 
-def calc_declinations(latitude, julian_day):
+def calc_declinations(float latitude, int julian_day):
   # calculation of declination - old DEC
   cdef float declination
   declination = -23.4 * cos(2.0 * pi * ((julian_day + 10.0) / 365.0))
@@ -16,8 +16,10 @@ def calc_declinations(latitude, julian_day):
   return declination, decl_sin, decl_cos
 
 
-def calc_astronomic_daylength(latitude, julian_day):
-  cdef float declination, decl_sin, decl_cos
+def calc_astronomic_daylength(float latitude, int julian_day):
+  cdef float declination
+  cdef float decl_sin
+  cdef float decl_cos
   declination, decl_sin, decl_cos = calc_declinations(latitude, julian_day)
 
   # Calculation of the atmospheric day length -> old DL
@@ -30,8 +32,10 @@ def calc_astronomic_daylength(latitude, julian_day):
   return astronomic_daylength
 
 
-def calc_effective_daylength(latitude, julian_day):
-  cdef float declination, decl_sin, decl_cos
+def calc_effective_daylength(float latitude, int julian_day):
+  cdef float declination
+  cdef float decl_sin
+  cdef float decl_cos
   declination, decl_sin, decl_cos = calc_declinations(latitude, julian_day)
 
   # Calculation of the effective day length = old DLE
@@ -44,15 +48,17 @@ def calc_effective_daylength(latitude, julian_day):
   return effective_daylength
 
 
-def calc_photoperiodic_daylength(latitude, julian_day):
-  cdef float declination, decl_sin, decl_cos
+def calc_photoperiodic_daylength(float latitude, int julian_day):
+  cdef float declination
+  cdef float decl_sin
+  cdef float decl_cos
   declination, decl_sin, decl_cos = calc_declinations(latitude, julian_day)
 
   # old DLP
   cdef float photo_daylength
   photo_daylength = (-sin(-6.0 * pi / 180.0) + decl_sin) / decl_cos
   photo_daylength = bound(-1.0, photo_daylength, 1.0) # The argument of asin must be in the range of -1 to 1
-  cdef float photoperiodicDayLength
+  cdef float photoperiodic_daylength
   photoperiodic_daylength = 12.0 * (pi + 2.0 * asin(photo_daylength)) / pi
 
   return photoperiodic_daylength

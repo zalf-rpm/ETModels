@@ -12,7 +12,6 @@
 using namespace Monica_Evapotranspiration;
 void Evapotranspiration::Init(ETState &s, ETState &s1, ETRate &r, ETAuxiliary &a, ETExogenous &ex)
 {
-    s.potential_evapotranspiration = 0.0;
     s.surface_water_storage = 0.0;
     s.evaporated_from_surface = 0.0;
     s.actual_evaporation = 0.0;
@@ -203,7 +202,7 @@ void Evapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRate &r, ETA
     //            * name: potential_evapotranspiration
     //                          ** description : the potential evapotranspiration
     //                          ** inputtype : variable
-    //                          ** variablecategory : state
+    //                          ** variablecategory : auxiliary
     //                          ** datatype : DOUBLE
     //                          ** max : 
     //                          ** min : 0
@@ -354,29 +353,29 @@ void Evapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRate &r, ETA
     double eRed3;
     double eReducer;
     int i;
-    if (s.potential_evapotranspiration > 0.0) {
+    if (a.potential_evapotranspiration > 0.0) {
         evaporation_from_surface = false;
         if (s.surface_water_storage > 0.0) {
             evaporation_from_surface = true;
-            s.potential_evapotranspiration = s.potential_evapotranspiration * 1.1 / ex.kc_factor;
+            a.potential_evapotranspiration = a.potential_evapotranspiration * 1.1 / ex.kc_factor;
             if (ex.has_snow_cover) {
                 s.evaporated_from_surface = 0.0;
             }
-            else if (s.surface_water_storage < s.potential_evapotranspiration) {
-                s.potential_evapotranspiration = s.potential_evapotranspiration - s.surface_water_storage;
+            else if (s.surface_water_storage < a.potential_evapotranspiration) {
+                a.potential_evapotranspiration = a.potential_evapotranspiration - s.surface_water_storage;
                 s.evaporated_from_surface = s.surface_water_storage;
                 s.surface_water_storage = 0.0;
             }
             else {
-                s.surface_water_storage = s.surface_water_storage - s.potential_evapotranspiration;
-                s.evaporated_from_surface = s.potential_evapotranspiration;
-                s.potential_evapotranspiration = 0.0;
+                s.surface_water_storage = s.surface_water_storage - a.potential_evapotranspiration;
+                s.evaporated_from_surface = a.potential_evapotranspiration;
+                a.potential_evapotranspiration = 0.0;
             }
-            s.potential_evapotranspiration = s.potential_evapotranspiration * ex.kc_factor / 1.1;
+            a.potential_evapotranspiration = a.potential_evapotranspiration * ex.kc_factor / 1.1;
         }
-        if (s.potential_evapotranspiration > 0.0) {
+        if (a.potential_evapotranspiration > 0.0) {
             for (i=0; i!=no_of_soil_layers; i+=1) {
-                eRed1 = e_reducer_1(permanent_wilting_point[i], field_capacity[i], s.soil_moisture[i], ex.percentage_soil_coverage, s.potential_evapotranspiration, evaporation_reduction_method, xsa_critical_soil_moisture);
+                eRed1 = e_reducer_1(permanent_wilting_point[i], field_capacity[i], s.soil_moisture[i], ex.percentage_soil_coverage, a.potential_evapotranspiration, evaporation_reduction_method, xsa_critical_soil_moisture);
                 eRed2 = 0.0;
                 if (float(i) >= maximum_evaporation_impact_depth) {
                     eRed2 = 0.0;
@@ -394,7 +393,7 @@ void Evapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRate &r, ETA
                 eReducer = eRed1 * eRed2 * eRed3;
                 if (ex.developmental_stage > 0) {
                     if (ex.percentage_soil_coverage >= 0.0 && ex.percentage_soil_coverage < 1.0) {
-                        s.evaporation[i] = (1.0 - ex.percentage_soil_coverage) * eReducer * s.potential_evapotranspiration;
+                        s.evaporation[i] = (1.0 - ex.percentage_soil_coverage) * eReducer * a.potential_evapotranspiration;
                     }
                     else if (ex.percentage_soil_coverage >= 1.0) {
                         s.evaporation[i] = 0.0;
@@ -404,7 +403,7 @@ void Evapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRate &r, ETA
                     }
                     s.transpiration[i] = ex.crop_transpiration[i];
                     if (evaporation_from_surface) {
-                        s.transpiration[i] = ex.percentage_soil_coverage * eReducer * s.potential_evapotranspiration;
+                        s.transpiration[i] = ex.percentage_soil_coverage * eReducer * a.potential_evapotranspiration;
                     }
                 }
                 else {
@@ -412,7 +411,7 @@ void Evapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRate &r, ETA
                         s.evaporation[i] = 0.0;
                     }
                     else {
-                        s.evaporation[i] = s.potential_evapotranspiration * eReducer;
+                        s.evaporation[i] = a.potential_evapotranspiration * eReducer;
                         s.transpiration[i] = 0.0;
                     }
                 }

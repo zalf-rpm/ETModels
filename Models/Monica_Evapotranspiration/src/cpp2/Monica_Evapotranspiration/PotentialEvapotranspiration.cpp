@@ -10,11 +10,9 @@
 #include <tuple>
 #include "PotentialEvapotranspiration.h"
 using namespace Monica_Evapotranspiration;
-void PotentialEvapotranspiration::Init(ETState &s, ETState &s1, ETRate &r, ETAuxiliary &a, ETExogenous &ex)
-{
-    s.potential_evapotranspiration = 0.0;
-}
 PotentialEvapotranspiration::PotentialEvapotranspiration() {}
+double PotentialEvapotranspiration::getpotential_evapotranspiration_cap() { return this->potential_evapotranspiration_cap; }
+void PotentialEvapotranspiration::setpotential_evapotranspiration_cap(double _potential_evapotranspiration_cap) { this->potential_evapotranspiration_cap = _potential_evapotranspiration_cap; }
 void PotentialEvapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRate &r, ETAuxiliary &a, ETExogenous &ex)
 {
     //- Name: PotentialEvapotranspiration -Version: 1, -Time step: 1
@@ -26,23 +24,14 @@ void PotentialEvapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRat
     //            * ExtendedDescription: None
     //            * ShortDescription: Calculates the MONICA potential evapotranspiration
     //- inputs:
-    //            * name: reference_evapotranspiration
-    //                          ** description : ET0
-    //                          ** inputtype : variable
-    //                          ** variablecategory : exogenous
+    //            * name: potential_evapotranspiration_cap
+    //                          ** description : cap ET0 to this value
+    //                          ** inputtype : parameter
+    //                          ** parametercategory : constant
     //                          ** datatype : DOUBLE
     //                          ** max : 
     //                          ** min : 0
-    //                          ** default : 0
-    //                          ** unit : mm
-    //            * name: external_reference_evapotranspiration
-    //                          ** description : externally supplied ET0
-    //                          ** inputtype : variable
-    //                          ** variablecategory : exogenous
-    //                          ** datatype : DOUBLE
-    //                          ** max : 
-    //                          ** min : 0
-    //                          ** default : -1
+    //                          ** default : 6.5
     //                          ** unit : mm
     //            * name: kc_factor
     //                          ** description : crop coefficient ETc/ET0
@@ -62,15 +51,6 @@ void PotentialEvapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRat
     //                          ** min : 0
     //                          ** default : 0
     //                          ** unit : dimensionless
-    //            * name: crop_reference_evapotranspiration
-    //                          ** description : the crop specific ET0, if no external ET0 and crop is planted
-    //                          ** inputtype : variable
-    //                          ** variablecategory : exogenous
-    //                          ** datatype : DOUBLE
-    //                          ** max : 
-    //                          ** min : 0
-    //                          ** default : -1
-    //                          ** unit : mm
     //            * name: crop_remaining_evapotranspiration
     //                          ** description : crop remaining evapotranspiration
     //                          ** inputtype : variable
@@ -80,10 +60,10 @@ void PotentialEvapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRat
     //                          ** min : 
     //                          ** default : 
     //                          ** unit : mm
-    //            * name: potential_evapotranspiration
-    //                          ** description : the potential evapotranspiration
+    //            * name: reference_evapotranspiration
+    //                          ** description : ET0 either from external ET0 or crop specific ET0
     //                          ** inputtype : variable
-    //                          ** variablecategory : state
+    //                          ** variablecategory : auxiliary
     //                          ** datatype : DOUBLE
     //                          ** max : 
     //                          ** min : 0
@@ -92,34 +72,18 @@ void PotentialEvapotranspiration::Calculate_Model(ETState &s, ETState &s1, ETRat
     //- outputs:
     //            * name: potential_evapotranspiration
     //                          ** description : the potential evapotranspiration
-    //                          ** variablecategory : state
-    //                          ** datatype : DOUBLE
-    //                          ** max : 
-    //                          ** min : 0
-    //                          ** unit : mm
-    //            * name: reference_evapotranspiration
-    //                          ** description : ET0
-    //                          ** variablecategory : exogenous
+    //                          ** variablecategory : auxiliary
     //                          ** datatype : DOUBLE
     //                          ** max : 
     //                          ** min : 0
     //                          ** unit : mm
     if (ex.developmental_stage > 0) {
-        if (ex.external_reference_evapotranspiration < 0.0) {
-            ex.reference_evapotranspiration = ex.crop_reference_evapotranspiration;
-        }
-        else {
-            ex.reference_evapotranspiration = ex.external_reference_evapotranspiration;
-        }
-        s.potential_evapotranspiration = ex.crop_remaining_evapotranspiration;
+        a.potential_evapotranspiration = ex.crop_remaining_evapotranspiration;
     }
     else {
-        if (ex.external_reference_evapotranspiration >= 0.0) {
-            ex.reference_evapotranspiration = ex.external_reference_evapotranspiration;
-        }
-        s.potential_evapotranspiration = ex.reference_evapotranspiration * ex.kc_factor;
+        a.potential_evapotranspiration = a.reference_evapotranspiration * ex.kc_factor;
     }
-    if (s.potential_evapotranspiration > 6.5) {
-        s.potential_evapotranspiration = 6.5;
+    if (a.potential_evapotranspiration > potential_evapotranspiration_cap) {
+        a.potential_evapotranspiration = potential_evapotranspiration_cap;
     }
 }

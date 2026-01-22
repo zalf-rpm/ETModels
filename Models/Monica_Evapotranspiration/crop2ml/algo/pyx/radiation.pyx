@@ -1,3 +1,5 @@
+cdef float decl_sin
+cdef float decl_cos
 declination, decl_sin, decl_cos = calc_declinations(latitude, julian_day)
 astronomic_daylength = calc_astronomic_daylength(latitude, julian_day)
 effective_daylength = calc_effective_daylength(latitude, julian_day)
@@ -6,17 +8,17 @@ photoperiodic_daylength = calc_photoperiodic_daylength(latitude, julian_day)
 # The argument of sqrt must be >= 0
 cdef float arg_phot_act
 arg_phot_act = min(1.0, ((decl_sin / decl_cos) * (decl_sin / decl_cos)))
-cdef float phot_act_radiation_mean
+#cdef float phot_act_radiation_mean
 phot_act_radiation_mean = 3600.0 * (decl_sin * astronomic_daylength + 24.0
                                     / pi * decl_cos * sqrt(1.0 - arg_phot_act))
 
-cdef float clear_day_radiation = 0.0
+#cdef float clear_day_radiation = 0.0
 if phot_act_radiation_mean > 0.0 and astronomic_daylength > 0.0:
     clear_day_radiation = (0.5 * 1300.0 * phot_act_radiation_mean
                            * exp(-0.14 / (phot_act_radiation_mean / (astronomic_daylength * 3600.0))))
 
 # Calculation of radiation on an overcast day [J m-2] - old DRO
-cdef float overcast_day_radiation
+#cdef float overcast_day_radiation
 overcast_day_radiation = 0.2 * clear_day_radiation
 
 # Calculation of extraterrestrial radiation - old EXT
@@ -29,11 +31,11 @@ solar_angle = -tan(latitude * pi / 180.0) * tan(declination * pi / 180.0)
 solar_angle = bound(-1.0, solar_angle, 1.0)
 cdef float sunset_solar_angle
 sunset_solar_angle = acos(solar_angle)
-cdef float extraterrestrial_radiation # [MJ m - 2]
+#cdef float extraterrestrial_radiation # [MJ m - 2]
 extraterrestrial_radiation = SC * (sunset_solar_angle * decl_sin + decl_cos * sin(sunset_solar_angle))
 
-if sunshine_hours > 0:
-    if global_radiation <= 0.0 and astronomic_daylength > 0:
+if sunshine_hours > 0.0:
+    if global_radiation <= 0.0 and astronomic_daylength > 0.0:
         sunshine_hours_global_radiation = extraterrestrial_radiation * (0.19 + 0.55 * sunshine_hours / astronomic_daylength)
     else:
-        sunshine_hours_global_radiation = 0
+        sunshine_hours_global_radiation = 0.0

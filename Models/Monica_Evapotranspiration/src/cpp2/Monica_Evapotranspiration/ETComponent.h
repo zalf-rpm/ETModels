@@ -1,15 +1,22 @@
-#include "Evapotranspiration.h"
+#include "Radiation.h"
+#include "NetRadiation.h"
+#include "StomataResistance.h"
+#include "SaturatedVaporPressure.h"
+#include "SaturationVaporPressureDeficit.h"
 #include "ReferenceEvapotranspiration.h"
 #include "PotentialEvapotranspiration.h"
+#include "Evapotranspiration.h"
 
 namespace Monica_Evapotranspiration {
 class ETComponent
 {
 private:
-    double reference_albedo{0};
-    double stomata_resistance{100};
     double latitude{0};
+    double reference_albedo{0};
     double height_nn{0};
+    double saturation_beta{2.5};
+    double stomata_conductance_alpha{40};
+    int carboxylation_pathway{0};
     double evaporation_zeta{40};
     double maximum_evaporation_impact_depth{5};
     int evaporation_reduction_method{1};
@@ -28,17 +35,23 @@ public:
 
     void Init(ETState &s, ETState &s1, ETRate &r, ETAuxiliary &a, ETExogenous &ex);
 
-    double getreference_albedo();
-    void setreference_albedo(double _reference_albedo);
-
-    double getstomata_resistance();
-    void setstomata_resistance(double _stomata_resistance);
-
     double getlatitude();
     void setlatitude(double _latitude);
 
+    double getreference_albedo();
+    void setreference_albedo(double _reference_albedo);
+
     double getheight_nn();
     void setheight_nn(double _height_nn);
+
+    double getsaturation_beta();
+    void setsaturation_beta(double _saturation_beta);
+
+    double getstomata_conductance_alpha();
+    void setstomata_conductance_alpha(double _stomata_conductance_alpha);
+
+    int getcarboxylation_pathway();
+    void setcarboxylation_pathway(int _carboxylation_pathway);
 
     double getevaporation_zeta();
     void setevaporation_zeta(double _evaporation_zeta);
@@ -67,9 +80,14 @@ public:
     std::vector<double> & getfield_capacity();
     void setfield_capacity(const std::vector<double> &  _field_capacity);
 
-    Evapotranspiration _Evapotranspiration;
+    Radiation _Radiation;
+    NetRadiation _NetRadiation;
+    StomataResistance _StomataResistance;
+    SaturatedVaporPressure _SaturatedVaporPressure;
+    SaturationVaporPressureDeficit _SaturationVaporPressureDeficit;
     ReferenceEvapotranspiration _ReferenceEvapotranspiration;
     PotentialEvapotranspiration _PotentialEvapotranspiration;
+    Evapotranspiration _Evapotranspiration;
 
 };
 }

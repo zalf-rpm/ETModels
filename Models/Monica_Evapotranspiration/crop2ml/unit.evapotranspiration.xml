@@ -56,7 +56,8 @@
         <Input name="crop_transpiration" description="crop transpiration array"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLEARRAY" len="no_of_soil_moisture_layers" max="" min="" default="" unit="mm"/>
-        <Input name="crop_evaporated_from_intercepted" description="crop evaporated water from intercepted water"
+        <Input name="crop_evaporated_from_intercepted"
+               description="crop evaporated water from intercepted water"
                inputtype="variable" variablecategory="exogenous"
                datatype="DOUBLE" max="" min="" default="" unit="mm"/>
         <Input name="percentage_soil_coverage" description="fraction of soil covered by crop"

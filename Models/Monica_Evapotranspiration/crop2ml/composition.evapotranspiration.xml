@@ -13,42 +13,77 @@
         <ShortDescription>Calculates the MONICA evapotranspiration</ShortDescription>
     </Description>
     <Composition>
-        <Model id="Monica_Evapotranspiration.Evapotranspiration"
-               name="Evapotranspiration"
-               filename="unit.evapotranspiration.xml"/>
+        <Model id="Monica_Evapotranspiration.Radiation"
+               name="Radiation"
+               filename="unit.net_radiation.xml"/>
+        <Model id="Monica_Evapotranspiration.NetRadiation"
+               name="NetRadiation"
+               filename="unit.net_radiation.xml"/>
+        <Model id="Monica_Evapotranspiration.StomataResistance"
+               name="StomataResistance"
+               filename="unit.stomata_resistance.xml"/>
+        <Model id="Monica_Evapotranspiration.SaturatedVaporPressure"
+               name="SaturatedVaporPressure"
+               filename="unit.saturated_vapor_pressure.xml"/>
+        <Model id="Monica_Evapotranspiration.SaturationVaporPressureDeficit"
+               name="SaturationVaporPressureDeficit"
+               filename="unit.saturation_vapor_pressure_deficit.xml"/>
         <Model id="Monica_Evapotranspiration.ReferenceEvapotranspiration"
                name="ReferenceEvapotranspiration"
                filename="unit.reference_evapotranspiration.xml"/>
         <Model id="Monica_Evapotranspiration.PotentialEvapotranspiration"
                name="PotentialEvapotranspiration"
                filename="unit.potential_evapotranspiration.xml"/>
+        <Model id="Monica_Evapotranspiration.Evapotranspiration"
+               name="Evapotranspiration"
+               filename="unit.evapotranspiration.xml"/>
+        <Model id="Monica_Evapotranspiration.IfElse"
+               name="IfElse"
+               filename="unit.if_else.xml"/>
         <Links>
-            <!-- into ET0 -->
-            <InputLink source="reference_albedo" target="ReferenceEvapotranspiration.reference_albedo"/>
-            <InputLink source="stomata_resistance" target="ReferenceEvapotranspiration.stomata_resistance"/>
-            <InputLink source="latitude" target="ReferenceEvapotranspiration.latitude"/>
+            <!-- into Radiation -->
+            <InputLink source="latitude" target="Radiation.latitude"/>
+            <InputLink source="global_radiation" target="Radiation.global_radiation"/>
+            <InputLink source="julian_day" target="Radiation.julian_day"/>
+            <InputLink source="sunshine_hours" target="Radiation.sunshine_hours"/>
+
+            <!-- into NetRadiation -->
+            <InputLink source="reference_albedo" target="NetRadiation.reference_albedo"/>
+            <InputLink source="height_nn" target="NetRadiation.height_nn"/>
+            <InputLink source="max_air_temperature" target="NetRadiation.max_air_temperature"/>
+            <InputLink source="min_air_temperature" target="NetRadiation.min_air_temperature"/>
+            <InputLink source="global_radiation" target="NetRadiation.global_radiation"/>
+            <InputLink source="vapor_pressure" target="NetRadiation.vapor_pressure"/>
+
+            <!-- into SaturatedVaporPressure -->
+            <InputLink source="max_air_temperature" target="SaturatedVaporPressure.max_air_temperature"/>
+            <InputLink source="min_air_temperature" target="SaturatedVaporPressure.min_air_temperature"/>
+            <InputLink source="relative_humidity" target="SaturatedVaporPressure.relative_humidity"/>
+
+            <!-- into SaturationVaporPressureDeficit -->
+            <InputLink source="vapor_pressure" target="SaturationVaporPressureDeficit.vapor_pressure"/>
+
+            <!-- into StomataResistance -->
+            <InputLink source="saturation_beta" target="StomataResistance.saturation_beta"/>
+            <InputLink source="stomata_conductance_alpha" target="StomataResistance.stomata_conductance_alpha"/>
+            <InputLink source="carboxylation_pathway" target="StomataResistance.carboxylation_pathway"/>
+            <InputLink source="gross_photosynthesis_reference_mol" target="StomataResistance.gross_photosynthesis_reference_mol"/>
+            <InputLink source="atmospheric_co2_concentration" target="StomataResistance.atmospheric_co2_concentration"/>
+
+            <!-- into ReferenceEvapotranspiration -->
             <InputLink source="height_nn" target="ReferenceEvapotranspiration.height_nn"/>
-            <InputLink source="max_air_temperature" target="ReferenceEvapotranspiration.max_air_temperature"/>
-            <InputLink source="min_air_temperature" target="ReferenceEvapotranspiration.min_air_temperature"/>
             <InputLink source="mean_air_temperature" target="ReferenceEvapotranspiration.mean_air_temperature"/>
-            <InputLink source="relative_humidity" target="ReferenceEvapotranspiration.relative_humidity"/>
             <InputLink source="wind_speed" target="ReferenceEvapotranspiration.wind_speed"/>
             <InputLink source="wind_speed_height" target="ReferenceEvapotranspiration.wind_speed_height"/>
-            <InputLink source="global_radiation" target="ReferenceEvapotranspiration.global_radiation"/>
-            <InputLink source="julian_day" target="ReferenceEvapotranspiration.julian_day"/>
-            <InputLink source="vapor_pressure" target="ReferenceEvapotranspiration.vapor_pressure"/>
-            <InputLink source="atmospheric_co2_concentration" target="ReferenceEvapotranspiration.atmospheric_co2_concentration"/>
-            <InputLink source="carboxylation_pathway" target="ReferenceEvapotranspiration.carboxylation_pathway"/>
-            <InputLink source="gross_photosynthesis_reference_mol" target="ReferenceEvapotranspiration.gross_photosynthesis_reference_mol"/>
+            <InputLink source="stomata_resistance" target="ReferenceEvapotranspiration.stomata_resistance"/>
+            <InputLink source="net_radiation" target="ReferenceEvapotranspiration.net_radiation"/>
 
-            <!-- into potET -->
-            <InputLink source="external_reference_evapotranspiration" target="PotentialEvapotranspiration.external_reference_evapotranspiration"/>
+            <!-- into PotentialEvapotranspiration -->
             <InputLink source="kc_factor" target="PotentialEvapotranspiration.kc_factor"/>
             <InputLink source="developmental_stage" target="PotentialEvapotranspiration.developmental_stage"/>
-            <InputLink source="crop_reference_evapotranspiration" target="PotentialEvapotranspiration.crop_reference_evapotranspiration"/>
             <InputLink source="crop_remaining_evapotranspiration" target="PotentialEvapotranspiration.crop_remaining_evapotranspiration"/>
 
-            <!-- into ET -->
+            <!-- into Evapotranspiration -->
             <InputLink source="evaporation_zeta" target="Evapotranspiration.evaporation_zeta"/>
             <InputLink source="maximum_evaporation_impact_depth" target="Evapotranspiration.maximum_evaporation_impact_depth"/>
             <InputLink source="evaporation_reduction_method" target="Evapotranspiration.evaporation_reduction_method"/>
@@ -74,26 +109,44 @@
             <InputLink source="evapotranspiration" target="Evapotranspiration.evapotranspiration"/>
             <InputLink source="actual_evapotranspiration" target="Evapotranspiration.actual_evapotranspiration"/>
 
-            <!-- ET0 to potET -->
-            <InternalLink source="ReferenceEvapotranspiration.reference_evapotranspiration" target="PotentialEvapotranspiration.reference_evapotranspiration"/>
+            <!-- if_else -->
+            <InputLink source="dev_stage_gt_0" target="IfElse.condition"/>
 
-            <!-- potET to ET -->
-            <InternalLink source="PotentialEvapotranspiration.potential_evapotranspiration" target="Evapotranspiration.potential_evapotranspiration"/>
+            <!--    to   -->
+            <InputLink source="true_branch" target="IfElse.true_branch"/>
+            <InputLink source="false_branch" target="IfElse.false_branch"/>
 
-            <!-- from ET0 -->
-            <OutputLink source="ReferenceEvapotranspiration.net_radiation" target="net_radiation"/>
+            <!-- Radiation to NetRadiation -->
+            <InternalLink source="Radiation.extraterrestrial_radiation"
+                          target="NetRadiation.extraterrestrial_radiation"/>
 
-            <!-- from potET -->
-            <OutputLink source="PotentialEvapotranspiration.potential_evapotranspiration" target="potential_evapotranspiration"/>
-            <OutputLink source="PotentialEvapotranspiration.reference_evapotranspiration" target="reference_evapotranspiration"/>
+            <!-- SaturatedVaporPressure to SaturationVaporPressureDeficit -->
+            <InternalLink source="SaturatedVaporPressure.saturated_vapor_pressure"
+                          target="SaturationVaporPressureDeficit.saturated_vapor_pressure"/>
 
-            <!-- from ET -->
-            <OutputLink source="Evapotranspiration.evaporated_from_surface" target="evaporated_from_surface"/>
-            <OutputLink source="Evapotranspiration.actual_evapotranspiration" target="actual_evapotranspiration"/>
-            <OutputLink source="Evapotranspiration.actual_evaporation" target="actual_evaporation"/>
-            <OutputLink source="Evapotranspiration.actual_transpiration" target="actual_transpiration"/>
-            <OutputLink source="Evapotranspiration.surface_water_storage" target="surface_water_storage"/>
-            <OutputLink source="Evapotranspiration.soil_moisture" target="soil_moisture"/>
+            <!-- SaturationVaporPressureDeficit to StomataResistance -->
+            <InternalLink source="SaturationVaporPressureDeficit.saturation_vapor_pressure_deficit"
+                          target="StomataResistance.saturation_vapor_pressure_deficit"/>
+
+            <!-- StomataResistance to ReferenceEvapotranspiration -->
+            <InternalLink source="StomataResistance.stomata_resistance"
+                          target="ReferenceEvapotranspiration.stomata_resistance"/>
+
+            <!-- ReferenceEvapotranspiration to PotentialEvapotranspiration -->
+            <InternalLink source="ReferenceEvapotranspiration.reference_evapotranspiration"
+                          target="PotentialEvapotranspiration.reference_evapotranspiration"/>
+
+            <!-- PotentialEvapotranspiration to Evapotranspiration -->
+            <InternalLink source="PotentialEvapotranspiration.potential_evapotranspiration"
+                          target="Evapotranspiration.potential_evapotranspiration"/>
+
+            <!-- from ReferenceEvapotranspiration -->
+             <OutputLink source="ReferenceEvapotranspiration.reference_evapotranspiration"
+                        target="reference_evapotranspiration"/>
+
+            <!-- from PotentialEvapotranspiration -->
+            <OutputLink source="PotentialEvapotranspiration.potential_evapotranspiration"
+                        target="potential_evapotranspiration"/>
         </Links>
     </Composition>
 </ModelComposition>
